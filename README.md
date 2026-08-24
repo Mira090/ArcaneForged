@@ -1,1 +1,3 @@
-# SephiriaArcaneForged
+# ArcaneForged
+
+開発中
