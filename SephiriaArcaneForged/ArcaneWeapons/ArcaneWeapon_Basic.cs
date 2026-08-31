@@ -1,6 +1,8 @@
 ﻿using Mirror;
+using Mirror.RemoteCalls;
 using SephiriaArcaneForged.Networks;
 using SephiriaArcaneForged.Registries;
+using SephiriaArcaneForged.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -256,6 +258,193 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         public override bool Weaved()
         {
             return true;
+        }
+
+
+
+        public virtual NewWeaponFireData FireData => null;
+        public virtual string DamageId => string.Empty;
+        public virtual float AttackDashScale => 1f;
+        public virtual int MpConsumed => 0;
+        public virtual float RangeBonus => 0f;
+        public virtual float TargetNoiseScale => 0.2f;
+        public virtual float? DamageMultiplier => 1f;
+        public virtual float GetDamage(UnitAvatar avatar)
+        {
+            return GetDamage(avatar, WeaponController);
+        }
+        public virtual float GetDamage(UnitAvatar avatar, WeaponControllerSimple weapon)
+        {
+            if (avatar == null || weapon == null || FireData == null)
+                return 0;
+            return weapon.currentWeapon.InvokeGetRelatedStatMultiplier(avatar, GetDamageElementalType(FireData) ?? EDamageElementalType.Physical, GetRelatedStatFormula(FireData), out var _);
+        }
+        public virtual EDamageElementalType? GetDamageElementalType(NewWeaponFireData fireData)
+        {
+            if (fireData == null)
+                return EDamageElementalType.Physical;
+            return fireData.damageElementalType;
+        }
+        /// <summary>
+        /// (EMPTY), FIREDAMAGE, ICEDAMAGE, LIGHTNINGDAMAGE, PHYSICALDAMAGE, HIGHEST, LOWEST, AVERAGE, AVERAGEALL
+        /// </summary>
+        /// <param name="fireData"></param>
+        /// <returns></returns>
+        public virtual string GetRelatedStatFormula(NewWeaponFireData fireData)
+        {
+            if (fireData == null)
+                return string.Empty;
+            return fireData.relatedStatFormula;
+        }
+        public virtual Vector3 GetAimedDelta()
+        {
+            return WeaponController.attackDirection;
+        }
+        public virtual int GetTriggerCount()
+        {
+            int count = 1;
+            return count;
+        }
+        public void Attack(float percent = 100f)
+        {
+            Attack(WeaponController.attackDirection, percent);
+        }
+        public virtual void Attack(Vector3 aimedDelta, float percent = 100)
+        {
+            Attack(GetTriggerCount(), aimedDelta, new List<CombatBehaviour>(), percent);
+        }
+        public virtual void Attack(CombatBehaviour target, float percent = 100)
+        {
+            var delta = target.transform.position - FirePosition(WeaponController);
+            delta += (Vector3)UnityEngine.Random.insideUnitCircle * TargetNoiseScale;
+            Attack(GetTriggerCount(), delta, new List<CombatBehaviour>(), percent);
+        }
+        public virtual void Attack(int count, Vector3 aimedDelta, List<CombatBehaviour> sharedTarget, float percent)
+        {
+            if (WeaponController.currentWeapon == null)
+                return;
+            RpcAttack();
+
+            Vector3 vector = FirePosition(WeaponController);
+            float y = WeaponController.shoulder.Position.y;
+            NewWeaponFireData attack = FireData;
+            if (attack == null)
+                return;
+            //float damage = WeaponController.currentWeapon.InvokeGetRelatedStatMultiplier(NetworkAvatar, GetDamageElementalType(attack), GetRelatedStatFormula(attack), out var elemental);
+            float damage = GetDamage(NetworkAvatar);
+            if (damage <= 0)
+                return;
+            damage = ModifyDamage(damage);
+            if (AttackDashScale > 0f)
+            {
+                GameCamera.Instance.targetTracker.CreateCameraShaking(WeaponController.transform.position, EShakeCameraType.Continous, attack.cameraShakeVelocityOnFire, 0.08f, 0.0625f);
+            }
+            damage = damage * percent / 100f;
+            float rangeBonus = (float)NetworkAvatar.GetCustomStat(ECustomStat.WeaponRange) / 100f + RangeBonus;
+            var temp = attack.damageElementalType;
+            var tempMultiplier = attack.damageMultiplier;
+            var elemental = GetDamageElementalType(FireData);
+            if (elemental.HasValue)
+                attack.damageElementalType = elemental.Value;
+            attack.damageMultiplier = DamageMultiplier ?? tempMultiplier;
+
+            attack.CreateAttack(EDamageFromType.DirectAttack, damage, DamageId, true, NetworkAvatar, vector, vector + aimedDelta, y, OnCreateAttack, sharedTarget, AttackDashScale, null, false, rangeBonus, 1f, MpConsumed, elemental);
+            attack.damageElementalType = temp;
+            attack.damageMultiplier = tempMultiplier;
+
+            if (count - 1 > 0)
+            {
+                this.Delay(0.05f, () =>
+                {
+                    if (IsEffectEnabled && NetworkAvatar != null && !NetworkAvatar.IsDead)
+                    {
+                        Attack(count - 1, aimedDelta, sharedTarget, percent);
+                    }
+                });
+            }
+        }
+        protected virtual float ModifyDamage(float damage)
+        {
+            damage += damage * (float)NetworkAvatar.GetCustomStat(ECustomStat.WeaponDamageBonus) / 100f;
+            if (MpConsumed > 0)
+            {
+                damage += damage * ((float)NetworkAvatar.GetCustomStatUnsafe("MPSKILLDAMAGE") / 100f);
+            }
+            damage += damage * ((float)NetworkAvatar.GetCustomStat(ECustomStat.FinalWeaponDamage) / 100f);
+            return damage;
+        }
+
+        protected virtual void OnCreateAttack(int idx, ProjectileBase projectile)
+        {
+
+        }
+        public virtual Vector3 FirePosition(WeaponControllerSimple simple)
+        {
+            return simple.shoulder.swingPoint.position - new Vector3(0f, simple.shoulder.Position.y, 0f);
+        }
+        [ClientRpc]
+        public void RpcAttack()
+        {
+            NetworkWriterPooled writer = NetworkWriterPool.Get();
+            var func = "System.Void ArcaneWeapon_Basic::RpcAttack()";
+            SendRPCInternal(func, func.ToFunctionHashCode(), writer, 0, includeOwner: true);
+            NetworkWriterPool.Return(writer);
+        }
+        protected virtual void UserCode_RpcAttack()
+        {
+            try
+            {
+                if (NetworkAvatar == null)
+                    return;
+                var weapon = NetworkAvatar.GetComponent<WeaponControllerSimple>();
+                if (weapon == null)
+                    return;
+                float fxScale = 1f + (float)NetworkAvatar.GetCustomStat(ECustomStat.WeaponRange) / 100f + NetworkAvatar.GetCustomStatUnsafe("MACHINARANGE") / 100f + RangeBonus;
+                NewWeaponFireData basicAttack = FireData;
+                //Core.Logger("FireData: " + basicAttack);
+                if (basicAttack == null)
+                    return;
+                bool flag = false;
+                int ownerIndex = -1;
+                foreach (PlayerSpawner playerSpawner in PlayerSpawner.MultiplayerList)
+                {
+                    if (playerSpawner && (weapon.gameObject == playerSpawner.gameObject || (NetworkAvatar.NetworkLeader && NetworkAvatar.NetworkLeader.gameObject == playerSpawner.gameObject)))
+                    {
+                        flag = true;
+                        ownerIndex = (playerSpawner.isOwned ? 1 : 0);
+                        break;
+                    }
+                }
+                bool canBeTransparentOnMultiplayer = false;
+                if (flag)
+                {
+                    canBeTransparentOnMultiplayer = true;
+                }
+                Vector3 position = this.FirePosition(weapon) + new Vector3(0f, weapon.shoulder.Position.y, 0f);
+                basicAttack.CreateSwingFx(canBeTransparentOnMultiplayer, weapon.transform, position, weapon.shoulder.transform.eulerAngles, fxScale, ownerIndex, 0f);
+            }
+            catch (Exception e)
+            {
+                Core.LoggerWarning(e);
+            }
+        }
+
+        protected static void InvokeUserCode_RpcAttack(NetworkBehaviour obj, NetworkReader reader, NetworkConnectionToClient senderConnection)
+        {
+            if (!NetworkClient.active)
+            {
+                Debug.LogError("RPC RpcAttack called on server.");
+            }
+            else
+            {
+                ((ArcaneWeapon_Basic)obj).UserCode_RpcAttack();
+            }
+        }
+
+
+        static ArcaneWeapon_Basic()
+        {
+            RemoteProcedureCalls.RegisterRpc(typeof(ArcaneWeapon_Basic), "System.Void ArcaneWeapon_Basic::RpcAttack()", InvokeUserCode_RpcAttack);
         }
     }
 }

@@ -70,5 +70,24 @@ namespace SephiriaArcaneForged.Utilities
             var method = type.GetMethod("RpcEquipWeapon", BindingFlags.Instance | BindingFlags.NonPublic);
             method.Invoke(instance, new object[] { weapon });
         }
+        public static float InvokeGetRelatedStatMultiplier(this WeaponSimple instance, UnitAvatar owner, EDamageElementalType elementalType, string relatedStatFormula, out EDamageElementalType result)
+        {
+            try
+            {
+                var type = typeof(WeaponSimple);
+                var method = type.GetMethod("GetRelatedStatMultiplier", BindingFlags.Instance | BindingFlags.NonPublic);
+                var parameters = new object[] { owner, elementalType, relatedStatFormula, null };
+                var value = method.Invoke(instance, parameters);
+                result = (EDamageElementalType)parameters[^1];
+                return (float)value;
+            }
+            catch (Exception ex)
+            {
+                Core.Logger("InvokeGetRelatedStatMultiplier failed");
+                Core.LoggerError(ex);
+                result = EDamageElementalType.Normal;
+                return 0f;
+            }
+        }
     }
 }

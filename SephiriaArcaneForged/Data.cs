@@ -89,6 +89,22 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon GreatSwordMagitech { get; } = ModArcaneWeapon.CreateDebuff("GreatSwordMagitech", 1113, "ELECTRIC", 50, "ELECTRIC_DAMAGE/20");
         /// <summary>
+        /// 光無き刃
+        /// ArcaneWeapon_DaggerDash_Affix
+        /// 光無き
+        /// ArcaneWeapon_DaggerDash_Effect
+        /// <tag=Dash>を使用すると、<tag=WeaponAction_Dagger_BladeZone>を放ちます。
+        /// </summary>
+        public static ModArcaneWeapon DaggerDash { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_EnhancedDashAttack>("DaggerDash", 26);
+        /// <summary>
+        /// 絶対羨望
+        /// ArcaneWeapon_DaggerFinal_Affix
+        /// 羨望の
+        /// ArcaneWeapon_DaggerFinal_Effect
+        /// <tag=WeaponAction_DashAttack>時、10秒間、<tag=WeaponAction_BasicAttack>ダメージ+20%、<tag=WeaponAction_DashAttack>ダメージ+30%のバフを獲得します。
+        /// </summary>
+        public static ModArcaneWeapon DaggerFinal { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_BasicAttackFinal>("DaggerFinal", 27);
+        /// <summary>
         /// 垂れ込める雷雲
         /// ArcaneWeapon_DaggerDarkCloud_Affix
         /// 垂れ込める

@@ -108,6 +108,11 @@ namespace SephiriaArcaneForged.Registries
         public int Percent { get; internal set; }
         public GameObject ResourcePrefab => _resourcePrefab;
         protected GameObject _resourcePrefab;
+
+        public ModDamageId DamageId { get; internal set; }
+        public DamageIdEntity DamageIdEntity { get; internal set; }
+        public bool HasDamageId => DamageIdEntity != null;
+
         public virtual GameObject CreateResourcePrefab()
         {
             var o = new GameObject(ResourcePrefabName);
@@ -141,6 +146,8 @@ namespace SephiriaArcaneForged.Registries
             AssetId = assetId;
             _resourcePrefab = CreateResourcePrefab();
             ArcaneWeaponEntity = CreateEntity();
+            if (DamageId != null)
+                DamageIdEntity = DamageId.CreateEntity();
         }
         protected virtual ArcaneWeaponEntity CreateInstance()
         {

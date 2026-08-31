@@ -16,5 +16,42 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static ScriptableFx _ringFxPrefab;
+        /// <summary>
+        /// 敷居跨ぎのバフ効果
+        /// </summary>
+        public static CharacterBuff BasicAttackFinalBuffPrefab
+        {
+            get
+            {
+                if (_basicAttackFinalBuffPrefab == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(22);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_Dagger>(out var dagger))
+                        return null;
+                    _basicAttackFinalBuffPrefab = dagger.basicAttackFinalBuffPrefab;
+                }
+                return _basicAttackFinalBuffPrefab;
+            }
+        }
+        private static CharacterBuff _basicAttackFinalBuffPrefab;
+        public static NewWeaponFireData DashAttackFireData_BladeZone
+        {
+            get
+            {
+                if (_dashAttackFireData_BladeZone == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(26);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_Dagger>(out var dagger))
+                        return null;
+                    _dashAttackFireData_BladeZone = dagger.dashAttackFireData_BladeZone;
+                }
+                return _dashAttackFireData_BladeZone;
+            }
+        }
+        private static NewWeaponFireData _dashAttackFireData_BladeZone;
     }
 }
