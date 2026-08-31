@@ -287,24 +287,23 @@ namespace SephiriaArcaneForged.Networks
                     if (example == null)
                         return;
                     ArcaneTextBox = UnityEngine.Object.Instantiate(example, example.transform.parent);
-                }/*
+                }
                 for (int q = 0; q < ArcaneTextBox.transform.childCount; q++)
                 {
                     var child = ArcaneTextBox.transform.GetChild(q);
-                    Core.Logger("child: " + child.gameObject.name);
+                    //Core.Logger("child: " + child.gameObject.name);
                     if(child.gameObject.name == "Bullet")
                     {
                         for(int q2 = 0; q2 < child.childCount; q2++)
                         {
-                            var bullet = child.GetChild(q);
-                            Core.Logger("bullet: " + bullet.gameObject.name);
-                            foreach (var comp in bullet.GetComponents<MonoBehaviour>())
+                            var bullet = child.GetChild(q2);
+                            if (bullet.gameObject.TryGetComponent<Image>(out var bulletImage))
                             {
-                                Core.Logger("compornent: " + comp.GetType());
+                                bulletImage.color = Color.red;
                             }
                         }
                     }
-                }*/
+                }
                 if (icon.WeaponSimple == null)//ジャーナルの場合
                 {
                     var arcane = ArcaneWeaponDatabase.FindWeaponById(weaponEntity);
@@ -327,8 +326,10 @@ namespace SephiriaArcaneForged.Networks
             [HarmonyPostfix]
             static void OpenKeywordsCoroutinePatch(UI_WeaponTooltip __instance, ref IEnumerator __result)
             {
+                Core.Logger("OpenKeywordsCoroutinePatch");
                 __result = Add(__result, () =>
                 {
+                    Core.Logger("OpenKeywordsCoroutine!!!!");
                     if (ArcaneTextBox == null)
                         return;
                     HashSet<string> hashSet = new HashSet<string>();
@@ -388,22 +389,46 @@ namespace SephiriaArcaneForged.Networks
         {
             public static Sprite NormalFrameSprite;
             public static Sprite ForgedFrameSprite;
+            public static Sprite NormalSelectedFrameSprite;
+            public static Sprite ForgedSelectedFrameSprite;
             [HarmonyPatch(nameof(UI_WeaponIcon.SetWeapon), new Type[] { typeof(WeaponSimple) })]
             [HarmonyPostfix]
             static void SetWeaponPatch(UI_WeaponIcon __instance, WeaponSimple weapon)
             {
-                Image iconImage = null;
-                if (__instance.transform.childCount > 0 && __instance.transform.GetChild(0).gameObject.TryGetComponent<Image>(out iconImage))
+                if (weapon == null)
+                    return;
+                var arcane = weapon.Networkowner.GetCurrentArcaneWeapon();
+
+                if (__instance.gameObject.TryGetComponent<UI_HorayButton>(out var button))
+                {
+                    var state = button.spriteState;
+
+                    if (NormalFrameSprite == null)
+                        NormalFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal");
+                    if (NormalSelectedFrameSprite == null)
+                        NormalSelectedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal_selected");
+                    if (ForgedFrameSprite == null)
+                        ForgedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged");
+                    if (ForgedSelectedFrameSprite == null)
+                        ForgedSelectedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged_selected");
+
+                    state.disabledSprite = arcane == null ? NormalFrameSprite : ForgedFrameSprite;
+                    state.highlightedSprite = arcane == null ? NormalFrameSprite : ForgedFrameSprite;
+                    state.pressedSprite = arcane == null ? NormalFrameSprite : ForgedFrameSprite;
+                    state.selectedSprite = arcane == null ? NormalSelectedFrameSprite : ForgedSelectedFrameSprite;
+
+                    button.spriteState = state;
+                }
+                if (__instance.transform.childCount < 1)
+                    return;
+
+                if (__instance.transform.GetChild(0).gameObject.TryGetComponent<Image>(out var iconImage))
                 {
                     if (NormalFrameSprite == null)
                         NormalFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal");
                     if (NormalFrameSprite != null)
                         iconImage.sprite = NormalFrameSprite;
 
-                    if (weapon == null)
-                        return;
-
-                    var arcane = weapon.Networkowner.GetCurrentArcaneWeapon();
                     if (arcane == null)
                         return;
 
@@ -413,8 +438,9 @@ namespace SephiriaArcaneForged.Networks
                         iconImage.sprite = ForgedFrameSprite;
                 }
             }
-            [HarmonyPatch(nameof(UI_WeaponIcon.OnSelect))]
-            [HarmonyPostfix]
+            //[HarmonyPatch(nameof(UI_WeaponIcon.OnSelect))]
+            //[HarmonyPostfix]
+            [Obsolete]
             static void OnSelectPatch(UI_WeaponIcon __instance)
             {
                 if (__instance.WeaponSimple == null)

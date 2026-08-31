@@ -64,5 +64,11 @@ namespace SephiriaArcaneForged.Utilities
         {
             return (List<UI_WeaponEnhancementButton>)typeof(UI_WeaponEnhancementPanel).GetField("buttons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(instance);
         }
+        public static void InvokeRpcEquipWeapon(this WeaponControllerSimple instance, WeaponSimple weapon)
+        {
+            var type = typeof(WeaponControllerSimple);
+            var method = type.GetMethod("RpcEquipWeapon", BindingFlags.Instance | BindingFlags.NonPublic);
+            method.Invoke(instance, new object[] { weapon });
+        }
     }
 }

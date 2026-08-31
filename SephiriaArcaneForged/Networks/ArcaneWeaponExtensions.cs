@@ -92,7 +92,7 @@ namespace SephiriaArcaneForged.Networks
 
             var weaponEntity = ArcaneWeaponDatabase.FindWeaponById(weaponID);
             GameObject gameObject = UnityEngine.Object.Instantiate(weaponEntity.resourcePrefab);
-            var component = gameObject.GetComponent<ArcaneWeapon_Basic>();
+            var arcane = gameObject.GetComponent<ArcaneWeapon_Basic>();
             if (controller.connectionToClient == null)
             {
                 NetworkServer.Spawn(gameObject);
@@ -102,10 +102,10 @@ namespace SephiriaArcaneForged.Networks
                 NetworkServer.Spawn(gameObject, controller.gameObject);
             }
 
-            component.Connect(controller.unitAvatar, ItemDatabase.GenerateInstanceID(new System.Random()), weaponEntity.id);
-            CurrentArcaneWeapons[controller].Add(component);
+            arcane.Connect(controller.unitAvatar, ItemDatabase.GenerateInstanceID(new System.Random()), weaponEntity.id);
+            CurrentArcaneWeapons[controller].Add(arcane);
             //OnWeaponEquippeedServerside?.Invoke(component);
-            //RpcEquipWeapon(component);
+            controller.InvokeRpcEquipWeapon(controller.currentWeapon);
             if (showFx)
             {
                 Vector3 position = controller.unitAvatar.transform.position;
