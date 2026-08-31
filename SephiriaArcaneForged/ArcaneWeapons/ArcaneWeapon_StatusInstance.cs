@@ -59,7 +59,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                 var instance = StatusDatabase.CreateStatusEntity(stat);
                 if (instance == null)
                     continue;
-                list.Add(new Loc.KeywordValue("VAL" + index, instance.ValueToString(false, false)));
+                list.Add(new Loc.KeywordValue("VAL" + index, instance.ValueToString(false, false).Replace("-", "")));
 
                 index++;
             }

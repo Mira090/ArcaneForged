@@ -159,7 +159,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         }
         private void OnDestroy()
         {
-            if (NetworkServer.active)
+            if (NetworkServer.active && WeaponController != null)
             {
                 Core.Logger("OnDestroy");
                 if (ArcaneWeaponExtensions.CurrentArcaneWeapons.ContainsKey(WeaponController))

@@ -15,7 +15,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             if (string.IsNullOrEmpty(stat))
                 return;
             NetworkAvatar.AddCustomStatUnsafe(stat, value);
-            Core.Logger($"{stat}: +{value}");
+            //Core.Logger($"{stat}: +{value}");
         }
         public override void OnDisabledEffect()
         {
@@ -23,7 +23,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             if (string.IsNullOrEmpty(stat))
                 return;
             NetworkAvatar.AddCustomStatUnsafe(stat, -value);
-            Core.Logger($"{stat}: {-value}");
+            //Core.Logger($"{stat}: {-value}");
         }
         public override Loc.KeywordValue[] BuildKeywords()
         {

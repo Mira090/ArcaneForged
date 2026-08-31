@@ -9,6 +9,7 @@ namespace SephiriaArcaneForged.Utilities
 {
     public static class AssetLoader
     {
+        public static readonly string UIPath = "UI\\";
         public static readonly string LocalizationPath = "Localization\\";
         public static string GetAssetsPath(string name)
         {

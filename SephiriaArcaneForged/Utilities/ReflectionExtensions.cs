@@ -60,5 +60,9 @@ namespace SephiriaArcaneForged.Utilities
         {
             return (IAnvilSound)typeof(UI_WeaponEnhancementPanel).GetField("anvilSound", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(instance);
         }
+        public static List<UI_WeaponEnhancementButton> GetButtons(this UI_WeaponEnhancementPanel instance)
+        {
+            return (List<UI_WeaponEnhancementButton>)typeof(UI_WeaponEnhancementPanel).GetField("buttons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(instance);
+        }
     }
 }

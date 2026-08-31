@@ -1,13 +1,20 @@
 ﻿using HarmonyLib;
 using Mirror;
+using Myevan;
 using Newtonsoft.Json.Linq;
 using SephiriaArcaneForged.Registries;
 using SephiriaArcaneForged.Utilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
+using UnityEngine.UI;
+using static UnityEngine.InputSystem.HID.HID;
 using Random = System.Random;
 
 namespace SephiriaArcaneForged.Networks
@@ -93,6 +100,7 @@ namespace SephiriaArcaneForged.Networks
         [HarmonyPatch(typeof(Anvil))]
         public static class AnvilPatch
         {
+            public static readonly int EnhanceSlotCount = 8;
             [HarmonyPatch("HandleInteraction")]
             [HarmonyPrefix]
             static void HandleInteractionPatch(Anvil __instance, GameObject actor)
@@ -115,7 +123,7 @@ namespace SephiriaArcaneForged.Networks
                     int seed = __instance.RandomID + playerAvatar.RandomID + __instance.localRerollSeedOffset;
                     Debug.Log("Initialize local weapon list seed: " + seed.ToString());
                     Random random = new Random(seed);
-                    int count = __instance.enhanceSlotCount;
+                    int count = EnhanceSlotCount;
                     if (playerAvatar)
                     {
                         count += playerAvatar.GetCustomStatUnsafe("EXTRAWEAPONCHOICES");
@@ -153,7 +161,7 @@ namespace SephiriaArcaneForged.Networks
                 Debug.Log("Reroll local weapon list seed: " + seed.ToString());
                 Random random = new Random(seed);
                 __instance.localWeaponList.Clear();
-                int count = __instance.enhanceSlotCount;
+                int count = EnhanceSlotCount;
                 count += player.GetCustomStatUnsafe("EXTRAWEAPONCHOICES");
                 for (int i = 0; i < count; i++)
                 {
@@ -208,9 +216,28 @@ namespace SephiriaArcaneForged.Networks
             static void UpdateListPatch(UI_WeaponEnhancementPanel __instance)
             {
                 var controller = __instance.GetWeaponController();
-                if (controller == null || !controller.CanEquipArcaneWeapon())
+                var buttons = __instance.GetButtons();
+                if (controller == null || !controller.CanEquipArcaneWeapon() || buttons == null)
                     return;
-                __instance.rerollButtonGroup.gameObject.SetActive(true);
+                if(__instance.GetAnvil() == null)
+                {
+                    foreach (EnhancementMetadata item in ArcaneWeaponDatabase.GetAll().Select(x => new EnhancementMetadata() { enhanced = x.weapon }))
+                    {
+                        UI_WeaponEnhancementButton button = ((!(controller.currentWeapon is WeaponSimple_Crossbow)) ? UnityEngine.Object.Instantiate(__instance.buttonPrefab, __instance.tableZone) : UnityEngine.Object.Instantiate(__instance.buttonPrefab_Crossbow, __instance.tableZone));
+                        button.SetWeaponMethod(__instance, controller.currentWeapon, item);
+                        button.OnSelect += __instance.OnSelect;
+                        button.OnDeselect += __instance.OnDeselect;
+                        buttons.Add(button);
+                    }
+                    if (buttons.Count > 0)
+                    {
+                        __instance.defaultSelectable = buttons[0].gameObject;
+                    }
+                }
+                else
+                {
+                    __instance.rerollButtonGroup.gameObject.SetActive(true);
+                }
             }
         }
         [HarmonyPatch(typeof(UI_WeaponEnhancementButton))]
@@ -243,7 +270,7 @@ namespace SephiriaArcaneForged.Networks
                 UI_WeaponIcon icon = target as UI_WeaponIcon;
                 if (icon == null)
                     return;
-                if(ArcaneTextBox != null)
+                if (ArcaneTextBox != null)
                 {
                     ArcaneTextBox.gameObject.SetActive(false);
                 }
@@ -260,17 +287,25 @@ namespace SephiriaArcaneForged.Networks
                     if (example == null)
                         return;
                     ArcaneTextBox = UnityEngine.Object.Instantiate(example, example.transform.parent);
-                }
+                }/*
                 for (int q = 0; q < ArcaneTextBox.transform.childCount; q++)
                 {
                     var child = ArcaneTextBox.transform.GetChild(q);
                     Core.Logger("child: " + child.gameObject.name);
-                    foreach (var comp in child.GetComponents<MonoBehaviour>())
+                    if(child.gameObject.name == "Bullet")
                     {
-                        Core.Logger("compornent: " + comp.GetType());
+                        for(int q2 = 0; q2 < child.childCount; q2++)
+                        {
+                            var bullet = child.GetChild(q);
+                            Core.Logger("bullet: " + bullet.gameObject.name);
+                            foreach (var comp in bullet.GetComponents<MonoBehaviour>())
+                            {
+                                Core.Logger("compornent: " + comp.GetType());
+                            }
+                        }
                     }
-                }
-                if(icon.WeaponSimple == null)//ジャーナルの場合
+                }*/
+                if (icon.WeaponSimple == null)//ジャーナルの場合
                 {
                     var arcane = ArcaneWeaponDatabase.FindWeaponById(weaponEntity);
                     if (arcane == null)
@@ -285,7 +320,126 @@ namespace SephiriaArcaneForged.Networks
                         return;
                     ArcaneTextBox.gameObject.SetActive(true);
                     ArcaneTextBox.SetText(arcane.GetEffectText());
-                    __instance.weaponNameText.text = $"<color=#E5D6FF>{arcane.GetAffixText()}{AffixSpace}{weaponEntity.aName}</color>";
+                    __instance.weaponNameText.text = $"<color=#E5D6FF>{arcane.GetAffixText()}{AffixSpace.ToString().Replace("-", "")}{weaponEntity.aName}</color>";
+                }
+            }
+            [HarmonyPatch("OpenKeywordsCoroutine")]
+            [HarmonyPostfix]
+            static void OpenKeywordsCoroutinePatch(UI_WeaponTooltip __instance, ref IEnumerator __result)
+            {
+                __result = Add(__result, () =>
+                {
+                    if (ArcaneTextBox == null)
+                        return;
+                    HashSet<string> hashSet = new HashSet<string>();
+                    for (int j = 0; j < ArcaneTextBox.text.textInfo.linkCount; j++)
+                    {
+                        TMP_LinkInfo linkInfo = ArcaneTextBox.text.textInfo.linkInfo[j];
+                        hashSet.Add(linkInfo.GetLinkID());
+                        KeywordEntity[] keyword = KeywordDatabase.GetConnecteDetailEntity(linkInfo.GetLinkID());
+                        for (int k = 0; k < keyword.Length; k++)
+                        {
+                            MatchCollection matches = Regex.Matches(keyword[k].description.ToString(), "<tag=(.*?)>");
+                            List<string> list = new List<string>();
+                            foreach (Match item in matches)
+                            {
+                                if (item.Groups.Count > 1)
+                                {
+                                    list.Add(item.Groups[1].Value);
+                                }
+                            }
+
+                            foreach (string item2 in list)
+                            {
+                                KeywordEntity entity = KeywordDatabase.GetEntity(item2);
+                                if (entity != null && entity.displayDetails)
+                                {
+                                    hashSet.Add(entity.keyword);
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (string item3 in hashSet)
+                    {
+                        KeywordEntity keyword = KeywordDatabase.GetEntity(item3);
+                        if (keyword != null)
+                        {
+                            string text = KeywordDatabase.Convert(keyword.GetRawDescription(), useColor: false, useSprite: false);
+                            if (text.Contains("("))
+                            {
+                                text = Korean.ReplaceJosa(text);
+                            }
+
+                            __instance.keywordViewer.AddKeyword(keyword.Convert_Details(useColor: false, useSprite: false), text);
+                        }
+                    }
+                });
+            }
+
+            static IEnumerator Add(IEnumerator original, Action added)
+            {
+                yield return original;
+                added?.Invoke();
+            }
+        }
+        [HarmonyPatch(typeof(UI_WeaponIcon))]
+        public static class UI_WeaponIconPatch
+        {
+            public static Sprite NormalFrameSprite;
+            public static Sprite ForgedFrameSprite;
+            [HarmonyPatch(nameof(UI_WeaponIcon.SetWeapon), new Type[] { typeof(WeaponSimple) })]
+            [HarmonyPostfix]
+            static void SetWeaponPatch(UI_WeaponIcon __instance, WeaponSimple weapon)
+            {
+                Image iconImage = null;
+                if (__instance.transform.childCount > 0 && __instance.transform.GetChild(0).gameObject.TryGetComponent<Image>(out iconImage))
+                {
+                    if (NormalFrameSprite == null)
+                        NormalFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal");
+                    if (NormalFrameSprite != null)
+                        iconImage.sprite = NormalFrameSprite;
+
+                    if (weapon == null)
+                        return;
+
+                    var arcane = weapon.Networkowner.GetCurrentArcaneWeapon();
+                    if (arcane == null)
+                        return;
+
+                    if (ForgedFrameSprite == null)
+                        ForgedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged");
+                    if (ForgedFrameSprite != null)
+                        iconImage.sprite = ForgedFrameSprite;
+                }
+            }
+            [HarmonyPatch(nameof(UI_WeaponIcon.OnSelect))]
+            [HarmonyPostfix]
+            static void OnSelectPatch(UI_WeaponIcon __instance)
+            {
+                if (__instance.WeaponSimple == null)
+                    return;
+
+                if (__instance.transform.childCount < 1)
+                    return;
+
+                if (__instance.transform.GetChild(0).gameObject.TryGetComponent<Image>(out var iconImage))
+                {
+                    var arcane = __instance.WeaponSimple.Networkowner.GetCurrentArcaneWeapon();
+                    if (arcane == null)
+                    {
+                        if (NormalFrameSprite == null)
+                            NormalFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal");
+                        if (NormalFrameSprite != null)
+                            iconImage.sprite = NormalFrameSprite;
+                    }
+                    else
+                    {
+                        if (ForgedFrameSprite == null)
+                            ForgedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged");
+                        if (ForgedFrameSprite != null)
+                            iconImage.sprite = ForgedFrameSprite;
+                    }
                 }
             }
         }

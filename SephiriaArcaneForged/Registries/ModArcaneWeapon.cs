@@ -39,6 +39,44 @@ namespace SephiriaArcaneForged.Registries
         }
         public static ModArcaneWeapon CreateFlag(string name, int weaponId, string stat, int value = 1)
             => CreateFlag<ArcaneWeapon_Flag>(name, weaponId, stat, value);
+        public static ModArcaneWeapon CreateDebuff<T>(string name, int weaponId, string debuff, int percent = 100, params string[] stats) where T : ArcaneWeapon_ApplyDebuff
+        {
+            return new ModArcaneWeapon()
+            {
+                Name = name,
+                ResourcePrefabName = $"ArcaneWeapon-{name}",
+                AffixString = new LocalizedString($"ArcaneWeapon_{name}_Affix"),
+                EffectString = new LocalizedString($"ArcaneWeapon_{name}_Effect"),
+                Id = weaponId,
+                Debuff = debuff,
+                Percent = percent,
+                Stats = stats,
+                ArcaneWeaponType = typeof(T)
+            };
+        }
+        public static ModArcaneWeapon CreateDebuff(string name, int weaponId, string debuff, int percent = 100, params string[] stats)
+            => CreateDebuff<ArcaneWeapon_ApplyDebuff>(name, weaponId, debuff, percent, stats);
+        public static ModArcaneWeapon CreateDebuffFlag<T>(string name, int weaponId, string stat, int value, string debuff, int percent = 100, params string[] stats) where T : ArcaneWeapon_ApplyDebuff
+        {
+            return new ModArcaneWeapon()
+            {
+                Name = name,
+                ResourcePrefabName = $"ArcaneWeapon-{name}",
+                AffixString = new LocalizedString($"ArcaneWeapon_{name}_Affix"),
+                EffectString = new LocalizedString($"ArcaneWeapon_{name}_Effect"),
+                Id = weaponId,
+                Stat = stat,
+                Value = value,
+                Debuff = debuff,
+                Percent = percent,
+                Stats = stats,
+                ArcaneWeaponType = typeof(T)
+            };
+        }
+        public static ModArcaneWeapon CreateDebuffFlag(string name, int weaponId, string stat, int value, string debuff, int percent = 100, params string[] stats)
+            => CreateDebuffFlag<ArcaneWeapon_ApplyDebuff>(name, weaponId, stat, value, debuff, percent, stats);
+        public static ModArcaneWeapon CreateStatsFlag(string name, int weaponId, string stat, int value, params string[] stats)
+            => CreateDebuffFlag(name, weaponId, stat, value, string.Empty, 0, stats);
         public static ModArcaneWeapon CreateStats<T>(string name, int weaponId, params string[] stats) where T : ArcaneWeapon_StatusInstance
         {
             return new ModArcaneWeapon()
@@ -66,6 +104,8 @@ namespace SephiriaArcaneForged.Registries
         public string[] Stats { get; internal set; }
         public string Stat { get; internal set; }
         public int Value { get; internal set; }
+        public string Debuff { get; internal set; }
+        public int Percent { get; internal set; }
         public GameObject ResourcePrefab => _resourcePrefab;
         protected GameObject _resourcePrefab;
         public virtual GameObject CreateResourcePrefab()
@@ -85,6 +125,13 @@ namespace SephiriaArcaneForged.Registries
             {
                 flag.stat = Stat;
                 flag.value = Value;
+            }
+            else if (arcane is ArcaneWeapon_ApplyDebuff debuff)
+            {
+                debuff.stat = Stat;
+                debuff.value = Value;
+                debuff.debuff = Debuff;
+                debuff.percent = Percent;
             }
             arcane.enabled = false;
             return o;
