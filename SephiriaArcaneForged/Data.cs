@@ -58,6 +58,22 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon SwordShieldFrostHammer { get; } = ModArcaneWeapon.CreateStatsFlag("SwordShieldFrostHammer", 1015, "DashAttackIceHammer".ToUpperInvariant(), 1, "FROST_RELIC_DAMAGE/-12");
         /// <summary>
+        /// バリスタソード
+        /// ArcaneWeapon_SwordShieldMiniBallista_Affix
+        /// バリスタの
+        /// ArcaneWeapon_SwordShieldMiniBallista_Effect
+        /// <tag=Artifact><tag=ITEM:1071>の矢が壁を貫通し、敵へと誘導されます。<tag=WeaponAction_Guard>成功時、即座に矢を発射します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldMiniBallista { get; } = ModArcaneWeapon.CreateFlag("SwordShieldMiniBallista", 1017, "ENHANCEDMINIBALLISTA").SetEffect("WeaponAddon_EnhancedMiniBallista_Effect");
+        /// <summary>
+        /// 超伝導体
+        /// ArcaneWeapon_SwordShieldLightningSpear_Affix
+        /// 超伝導
+        /// ArcaneWeapon_SwordShieldLightningSpear_Effect
+        /// <tag=WeaponAction_SpecialAttack>をした時、<tag=DarkCloud>を4ではなく{CONSUME}消費して<tag=WeaponAction_LightningSpear>が発動します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldLightningSpear { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_LightningSpear>("SwordShieldLightningSpear", 1018);
+        /// <summary>
         /// 紅蛇の粉砕
         /// ArcaneWeapon_GreatSwordEmber_Affix
         /// 紅蛇の
@@ -97,6 +113,14 @@ namespace SephiriaArcaneForged
         /// <tag=WeaponAction_DirectAttack>時、命中した敵に<tag=Debuff_Wound>を付与します。<tag=Debuff_Wound>の最大スタックが{VALUE}増加します。
         /// </summary>
         public static ModArcaneWeapon GreatSwordWound { get; } = ModArcaneWeapon.CreateDebuffFlag("GreatSwordWound", 1108, "WOUNDSTACK", 3, "WOUND", 100);
+        /// <summary>
+        /// 電撃大剣「E3G」
+        /// ArcaneWeapon_GreatSwordDarkCloud_Affix
+        /// 充電する
+        /// ArcaneWeapon_GreatSwordDarkCloud_Effect
+        /// {SWING}回攻撃するごとに<tag=DarkCloud>を{COUNT}個獲得します。
+        /// </summary>
+        public static ModArcaneWeapon GreatSwordDarkCloud { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_AddDarkCloudOnAttack>("GreatSwordDarkCloud", 1109);
         /// <summary>
         /// 電撃大剣「S3G」
         /// ArcaneWeapon_GreatSwordMagitech_Affix

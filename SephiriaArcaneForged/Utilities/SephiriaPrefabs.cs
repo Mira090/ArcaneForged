@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SephiriaArcaneForged.Utilities
@@ -53,6 +54,23 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData _dashAttackFireData_BladeZone;
+        public static NewWeaponFireData LightningSpearFireData
+        {
+            get
+            {
+                if (_lightningSpearFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1018);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_SwordAndShield>(out var sword))
+                        return null;
+                    _lightningSpearFireData = sword.specialAttacks.FirstOrDefault();
+                }
+                return _lightningSpearFireData;
+            }
+        }
+        private static NewWeaponFireData _lightningSpearFireData;
         /// <summary>
         /// 杖を伸ばすバフ効果
         /// </summary>
