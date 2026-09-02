@@ -39,6 +39,24 @@ namespace SephiriaArcaneForged.Registries
         }
         public static ModArcaneWeapon CreateFlag(string name, int weaponId, string stat, int value = 1)
             => CreateFlag<ArcaneWeapon_Flag>(name, weaponId, stat, value);
+        public static ModArcaneWeapon CreateBuff<T>(string name, int weaponId, string buffName, Func<CharacterBuff> buffPrefab, int percent = 100, params string[] stats) where T : ArcaneWeapon_AttackBuff
+        {
+            return new ModArcaneWeapon()
+            {
+                Name = name,
+                ResourcePrefabName = $"ArcaneWeapon-{name}",
+                AffixString = new LocalizedString($"ArcaneWeapon_{name}_Affix"),
+                EffectString = new LocalizedString($"ArcaneWeapon_{name}_Effect"),
+                Id = weaponId,
+                Percent = percent,
+                Stats = stats,
+                BuffPrefab = buffPrefab,
+                BuffName = buffName,
+                ArcaneWeaponType = typeof(T)
+            };
+        }
+        public static ModArcaneWeapon CreateBuff(string name, int weaponId, string buffName, Func<CharacterBuff> buffPrefab, int percent = 100, params string[] stats)
+            => CreateBuff<ArcaneWeapon_AttackBuff>(name, weaponId, buffName, buffPrefab, percent, stats);
         public static ModArcaneWeapon CreateDebuff<T>(string name, int weaponId, string debuff, int percent = 100, params string[] stats) where T : ArcaneWeapon_ApplyDebuff
         {
             return new ModArcaneWeapon()
@@ -106,6 +124,8 @@ namespace SephiriaArcaneForged.Registries
         public int Value { get; internal set; }
         public string Debuff { get; internal set; }
         public int Percent { get; internal set; }
+        public Func<CharacterBuff> BuffPrefab { get; internal set; }
+        public string BuffName { get; internal set; }
         public GameObject ResourcePrefab => _resourcePrefab;
         protected GameObject _resourcePrefab;
 
@@ -126,7 +146,7 @@ namespace SephiriaArcaneForged.Registries
             {
                 status.stats = Stats;
             }
-            if(arcane is ArcaneWeapon_Flag flag)
+            if (arcane is ArcaneWeapon_Flag flag)
             {
                 flag.stat = Stat;
                 flag.value = Value;
@@ -138,8 +158,22 @@ namespace SephiriaArcaneForged.Registries
                 debuff.debuff = Debuff;
                 debuff.percent = Percent;
             }
+            else if (arcane is ArcaneWeapon_AttackBuff attackBuff)
+            {
+                attackBuff.buffName = BuffName;
+                attackBuff.buffPercent = Percent;
+            }
             arcane.enabled = false;
             return o;
+        }
+        public virtual void OnRegister()
+        {
+            if (ResourcePrefab == null)
+                return;
+            if(ResourcePrefab.TryGetComponent<ArcaneWeapon_AttackBuff>(out var buff))
+            {
+                buff.buffPrefab = BuffPrefab?.Invoke();
+            }
         }
         public virtual void Init(uint assetId)
         {

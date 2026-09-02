@@ -2,11 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace SephiriaArcaneForged
 {
     public static class Events
     {
+        #region Version
+        [HarmonyPatch(typeof(Application), nameof(Application.version), MethodType.Getter)]
+        public static class GameVersionPatch
+        {
+            static void Postfix(ref string __result)
+            {
+                __result += ".: " + Core.Instance.metadata.modName + " v" + Core.Instance.metadata.modVersion;
+            }
+        }
+        #endregion
+        
+
         public static readonly string ChangeToFire = "WeaponToFireDamage".ToUpperInvariant();
         public static readonly string ChangeToIce= "WeaponToIceDamage".ToUpperInvariant();
         public static readonly string ChangeToLightning = "WeaponToLightningDamage".ToUpperInvariant();

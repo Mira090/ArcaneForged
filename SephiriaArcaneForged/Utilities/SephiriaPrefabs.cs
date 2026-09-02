@@ -53,5 +53,25 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData _dashAttackFireData_BladeZone;
+        /// <summary>
+        /// 杖を伸ばすバフ効果
+        /// </summary>
+        public static CharacterBuff StaffExtendBuffPrefab
+        {
+            get
+            {
+                if (_staffExtendBuffPrefab == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(506);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponAddonCommon_AttackBuff>(out var addon))
+                        return null;
+                    _staffExtendBuffPrefab = addon.buffPrefab;
+                }
+                return _staffExtendBuffPrefab;
+            }
+        }
+        private static CharacterBuff _staffExtendBuffPrefab;
     }
 }

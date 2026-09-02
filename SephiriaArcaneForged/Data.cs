@@ -3,6 +3,7 @@ using Miniscript;
 using Mirror;
 using SephiriaArcaneForged.ArcaneWeapons;
 using SephiriaArcaneForged.Registries;
+using SephiriaArcaneForged.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,22 @@ namespace SephiriaArcaneForged
         /// <tag=WeaponAction_DirectAttack>が<tag=LightningDamage>ベースに変更されます。
         /// </summary>
         public static ModArcaneWeapon WandLightning { get; } = ModArcaneWeapon.CreateFlag("WandLightning", 1010, Events.ChangeToLightning);
+        /// <summary>
+        /// 氷河の刃
+        /// ArcaneWeapon_SwordShieldFrostSword_Affix
+        /// 氷河の
+        /// ArcaneWeapon_SwordShieldFrostSword_Effect
+        /// <tag=Artifact><tag=ITEM:1014>の投射物は小さくなりますが、{VAL0}%早くチャージされます。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldFrostSword { get; } = ModArcaneWeapon.Create<ArcaneWeapon_IceSwordMini>("SwordShieldFrostSword", 1014).SetEffect("WeaponAddon_Tier3_Ice_Effect");
+        /// <summary>
+        /// 吹雪の前夜
+        /// ArcaneWeapon_SwordShieldFrostHammer_Affix
+        /// 吹雪の
+        /// ArcaneWeapon_SwordShieldFrostHammer_Effect
+        /// <tag=DashCount>を消費すると、<tag=Artifact><tag=ITEM:1208>を60%のダメージで即時発動します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldFrostHammer { get; } = ModArcaneWeapon.CreateFlag("SwordShieldFrostHammer", 1015, "DashAttackIceHammer".ToUpperInvariant()).SetEffect("WeaponAddon_Tier3_IceHammer_Effect");
         /// <summary>
         /// 紅蛇の粉砕
         /// ArcaneWeapon_GreatSwordEmber_Affix
@@ -169,6 +186,38 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon KatanaMagicCritical { get; } = ModArcaneWeapon.CreateStats("KatanaMagicCritical", 413, "MAGIC_CRITICAL/3000");
         /// <summary>
+        /// 海の錘
+        /// ArcaneWeapon_StaffExtend_Affix
+        /// 神珍鉄の
+        /// ArcaneWeapon_StaffExtend_Effect
+        /// <tag=WeaponAction_DirectAttack>時に、{BUFF}バフを獲得します。
+        /// </summary>
+        public static ModArcaneWeapon StaffExtend { get; } = ModArcaneWeapon.CreateBuff("StaffExtend", 506, "Buff_StaffExtend", () => SephiriaPrefabs.StaffExtendBuffPrefab).SetEffect("WeaponAddon_AttackBuff_Effect");
+        /// <summary>
+        /// 無環錫杖
+        /// ArcaneWeapon_StaffCritical_Affix
+        /// 無環
+        /// ArcaneWeapon_StaffCritical_Effect
+        /// <tag=CriticalChance>が{TARGET}以下の場合、与えるダメージが{ADDDAMAGE}増加します。
+        /// </summary>
+        public static ModArcaneWeapon StaffCritical { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_DamageByLowCritical>("StaffCritical", 507).SetEffect("WeaponAddon_StaffT3Crit_Effect");
+        /// <summary>
+        /// 突撃槍ルアシュレア
+        /// ArcaneWeapon_StaffDashDamage_Affix
+        /// ルアシュレアの
+        /// ArcaneWeapon_StaffDashDamage_Effect
+        /// <tag=DashCount>1ポイントごとに<tag=WeaponAction_DirectAttack>で与えるダメージが{VALUE}%増加します。
+        /// </summary>
+        public static ModArcaneWeapon StaffDashDamage { get; } = ModArcaneWeapon.CreateFlag("StaffDashDamage", 514, "WEAPONDAMAGEBONUSBYDASHCOUNT", 4);
+        /// <summary>
+        /// 突撃槍プアールスカ
+        /// ArcaneWeapon_StaffDashGuard_Affix
+        /// プアールスカの
+        /// ArcaneWeapon_StaffDashGuard_Effect
+        /// <tag=WeaponAction_DashAttack>に<tag=WeaponAction_Guard>が付与されます。
+        /// </summary>
+        public static ModArcaneWeapon StaffDashGuard { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_GuardDashAttack>("StaffDashGuard", 515);
+        /// <summary>
         /// ピアオラ議事槌
         /// ArcaneWeapon_StaffEmber_Affix
         /// 議事の
@@ -221,6 +270,7 @@ namespace SephiriaArcaneForged
         {
             foreach(var mod in ArcaneWeapons)
             {
+                mod.OnRegister();
                 ArcaneWeaponDatabase.Register(mod.ArcaneWeaponEntity);
             }
         }
