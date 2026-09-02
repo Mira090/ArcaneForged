@@ -91,5 +91,25 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static CharacterBuff _staffExtendBuffPrefab;
+        /// <summary>
+        /// 支配バフ
+        /// </summary>
+        public static CharacterBuff ThrowCompBuffPrefab
+        {
+            get
+            {
+                if (_throwCompBuffPrefab == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1210);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponAddonCommon_AttackBuff>(out var addon))
+                        return null;
+                    _throwCompBuffPrefab = addon.buffPrefab;
+                }
+                return _throwCompBuffPrefab;
+            }
+        }
+        private static CharacterBuff _throwCompBuffPrefab;
     }
 }

@@ -23,6 +23,7 @@ namespace SephiriaArcaneForged
         public static readonly string ChangeToFire = "WeaponToFireDamage".ToUpperInvariant();
         public static readonly string ChangeToIce= "WeaponToIceDamage".ToUpperInvariant();
         public static readonly string ChangeToLightning = "WeaponToLightningDamage".ToUpperInvariant();
+        public static readonly string ChangeToChaos = "WeaponToChaosDamage".ToUpperInvariant();
 
         [HarmonyPatch(typeof(WeaponSimple), "GetRelatedStatMultiplier")]
         public static class RelatedStatPatch
@@ -47,6 +48,8 @@ namespace SephiriaArcaneForged
                 elementalType = EDamageElementalType.Ice;
             if (owner.GetCustomStatUnsafe(ChangeToLightning) > 0)
                 elementalType = EDamageElementalType.Lightning;
+            if (owner.GetCustomStatUnsafe(ChangeToChaos) > 0)
+                elementalType = EDamageElementalType.Chaos;
         }
         [HarmonyPatch(typeof(NewWeaponFireData), "InstantiateProjectile")]
         public static class ProjectilePatch

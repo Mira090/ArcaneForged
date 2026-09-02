@@ -114,6 +114,14 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon GreatSwordWound { get; } = ModArcaneWeapon.CreateDebuffFlag("GreatSwordWound", 1108, "WOUNDSTACK", 3, "WOUND", 100);
         /// <summary>
+        /// 異端審問官
+        /// ArcaneWeapon_GreatSwordExplosion_Affix
+        /// 異端審問官の
+        /// ArcaneWeapon_GreatSwordExplosion_Effect
+        /// <tag=WeaponAction_DirectAttack>で与えたダメージが<tag=Elemental_Chaos>属性として適用されます。
+        /// </summary>
+        public static ModArcaneWeapon GreatSwordExplosion { get; } = ModArcaneWeapon.CreateFlag("GreatSwordExplosion", 1115, Events.ChangeToChaos);
+        /// <summary>
         /// 電撃大剣「E3G」
         /// ArcaneWeapon_GreatSwordDarkCloud_Affix
         /// 充電する
@@ -162,6 +170,22 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon DaggerMagitech { get; } = ModArcaneWeapon.CreateDebuff("DaggerMagitech", 1205, "ELECTRIC", 40, "ELECTRIC_STACK/1");
         /// <summary>
+        /// 福寿草
+        /// ArcaneWeapon_DaggerCritical_Affix
+        /// ニンジャの
+        /// ArcaneWeapon_DaggerCritical_Effect
+        /// <tag=WeaponAction_DirectAttack>で与える<tag=CriticalDamageRate>が30%増幅されます。
+        /// </summary>
+        public static ModArcaneWeapon DaggerCritical { get; } = ModArcaneWeapon.CreateFlag("DaggerCritical", 1207, "WEAPONCRITICALDAMAGEAMPLIFY", 30).SetEffect("WeaponAddon_ClubCritical_Effect");
+        /// <summary>
+        /// 黒幕
+        /// ArcaneWeapon_DaggerCompanion_Affix
+        /// 黒幕の
+        /// ArcaneWeapon_DaggerCompanion_Effect
+        /// <tag=WeaponAction_DirectAttack>時に、{BUFF}バフを獲得します。
+        /// </summary>
+        public static ModArcaneWeapon DaggerCompanion { get; } = ModArcaneWeapon.CreateBuff("DaggerCompanion", 1210, "Buff_ThrowComp", () => SephiriaPrefabs.ThrowCompBuffPrefab).SetEffect("WeaponAddon_AttackBuff_Effect");
+        /// <summary>
         /// 冷凍ワカサギ
         /// ArcaneWeapon_DaggerGlacier_Affix
         /// 冷凍
@@ -201,6 +225,14 @@ namespace SephiriaArcaneForged
         /// <tag=Debuff_Poison>のスタックが{VALUE}増加します。
         /// </summary>
         public static ModArcaneWeapon CrossbowPoison { get; } = ModArcaneWeapon.CreateFlag("CrossbowPoison", 121, "PoisonStack".ToUpperInvariant(), 3);
+        /// <summary>
+        /// XRA-9
+        /// ArcaneWeapon_CrossbowRifle_Affix
+        /// 試作型
+        /// ArcaneWeapon_CrossbowRifle_Effect
+        /// <tag=WeaponAction_BasicAttack>で最後の攻撃を行うと、すべての<tag=Magic>と<tag=ActiveCharm>の現在のクールダウンが10%減少します。
+        /// </summary>
+        public static ModArcaneWeapon CrossbowRifle { get; } = ModArcaneWeapon.Create<ArcaneWeapon_FinalComboDecreaseCooldown>("CrossbowRifle", 123);
         /// <summary>
         /// 燃え盛るヘルバヌス
         /// ArcaneWeapon_KatanaEmber_Affix
