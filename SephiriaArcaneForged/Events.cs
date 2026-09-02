@@ -38,81 +38,89 @@ namespace SephiriaArcaneForged
                     relatedStatFormula = "LightningDamage".ToUpperInvariant();
             }
         }
-        static void ModifyElementalType(UnitAvatar owner, ref EDamageElementalType elementalType)
+        static void ModifyElementalType(NewWeaponFireData __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
         {
             if (owner == null)
                 return;
             if (owner.GetCustomStatUnsafe(ChangeToFire) > 0)
+            {
                 elementalType = EDamageElementalType.Fire;
+            }
             if (owner.GetCustomStatUnsafe(ChangeToIce) > 0)
+            {
                 elementalType = EDamageElementalType.Ice;
+            }
             if (owner.GetCustomStatUnsafe(ChangeToLightning) > 0)
+            {
                 elementalType = EDamageElementalType.Lightning;
+            }
             if (owner.GetCustomStatUnsafe(ChangeToChaos) > 0)
+            {
                 elementalType = EDamageElementalType.Chaos;
+            }
         }
         [HarmonyPatch(typeof(NewWeaponFireData), "InstantiateProjectile")]
         public static class ProjectilePatch
         {
-            static void Prefix(UnitAvatar owner, ref EDamageElementalType elementalType)
+            static void Prefix(NewWeaponFireData __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
             {
-                ModifyElementalType(owner, ref elementalType);
+                ModifyElementalType(__instance, owner, ref elementalType);
             }
         }
         [HarmonyPatch(typeof(NewWeaponFireData_MeleeAttack), "InstantiateProjectile")]
         public static class ProjectilePatch2
         {
-            static void Prefix(UnitAvatar owner, ref EDamageElementalType elementalType)
+            static void Prefix(NewWeaponFireData_MeleeAttack __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
             {
-                ModifyElementalType(owner, ref elementalType);
+                ModifyElementalType(__instance, owner, ref elementalType);
             }
         }
         [HarmonyPatch(typeof(NewWeaponFireData_Bullet), "InstantiateProjectile")]
         public static class ProjectilePatch3
         {
-            static void Prefix(UnitAvatar owner, ref EDamageElementalType elementalType)
+            static void Prefix(NewWeaponFireData_Bullet __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
             {
-                ModifyElementalType(owner, ref elementalType);
+                ModifyElementalType(__instance, owner, ref elementalType);
             }
         }
         [HarmonyPatch(typeof(NewWeaponFireData_BulletBurst), "InstantiateProjectile")]
         public static class ProjectilePatch4
         {
-            static void Prefix(UnitAvatar owner, ref EDamageElementalType elementalType)
+            static void Prefix(NewWeaponFireData_BulletBurst __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
             {
-                ModifyElementalType(owner, ref elementalType);
+                ModifyElementalType(__instance, owner, ref elementalType);
             }
         }
         [HarmonyPatch(typeof(NewWeaponFireData_BulletSpread), "InstantiateProjectile")]
         public static class ProjectilePatch5
         {
-            static void Prefix(UnitAvatar owner, ref EDamageElementalType elementalType)
+            static void Prefix(NewWeaponFireData_BulletSpread __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
             {
-                ModifyElementalType(owner, ref elementalType);
+                ModifyElementalType(__instance, owner, ref elementalType);
             }
         }
         //[HarmonyPatch(typeof(NewWeaponFireData_Bullet_MiniDrone), "InstantiateProjectile")]
         public static class ProjectilePatch6
         {
-            static void Prefix(UnitAvatar owner, ref EDamageElementalType elementalType)
+            static void Prefix(NewWeaponFireData_Bullet_MiniDrone __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
             {
-                ModifyElementalType(owner, ref elementalType);
+                ModifyElementalType(__instance, owner, ref elementalType);
             }
         }
         [HarmonyPatch(typeof(NewWeaponFireData_SpecialProjectile), "InstantiateProjectile")]
         public static class ProjectilePatch7
         {
-            static void Prefix(UnitAvatar owner, ref EDamageElementalType elementalType)
+            static void Prefix(NewWeaponFireData_SpecialProjectile __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
             {
-                ModifyElementalType(owner, ref elementalType);
+                ModifyElementalType(__instance, owner, ref elementalType);
             }
         }
         [HarmonyPatch(typeof(NewWeaponFireData_Summon), "InstantiateProjectile")]
         public static class ProjectilePatch8
         {
-            static void Prefix(UnitAvatar owner, ref EDamageElementalType elementalType)
+            static void Prefix(NewWeaponFireData_Summon __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
             {
-                ModifyElementalType(owner, ref elementalType);
+                ModifyElementalType(__instance, owner, ref elementalType);
             }
         }
     }
