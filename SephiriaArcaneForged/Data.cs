@@ -54,9 +54,9 @@ namespace SephiriaArcaneForged
         /// ArcaneWeapon_SwordShieldFrostHammer_Affix
         /// 吹雪の
         /// ArcaneWeapon_SwordShieldFrostHammer_Effect
-        /// <tag=DashCount>を消費すると、<tag=Artifact><tag=ITEM:1208>を60%のダメージで即時発動します。
+        /// <tag=FrostRelicDamage>が{VAL0}減少しますが、<tag=DashCount>を消費すると、<tag=Artifact><tag=ITEM:1208>を60%のダメージで即時発動します。
         /// </summary>
-        public static ModArcaneWeapon SwordShieldFrostHammer { get; } = ModArcaneWeapon.CreateFlag("SwordShieldFrostHammer", 1015, "DashAttackIceHammer".ToUpperInvariant()).SetEffect("WeaponAddon_Tier3_IceHammer_Effect");
+        public static ModArcaneWeapon SwordShieldFrostHammer { get; } = ModArcaneWeapon.CreateStatsFlag("SwordShieldFrostHammer", 1015, "DashAttackIceHammer".ToUpperInvariant(), 1, "FROST_RELIC_DAMAGE/-12");
         /// <summary>
         /// 紅蛇の粉砕
         /// ArcaneWeapon_GreatSwordEmber_Affix
@@ -137,6 +137,22 @@ namespace SephiriaArcaneForged
         /// <tag=WeaponAction_DirectAttack>時、命中した敵に{PERCENT}の確率で<tag=Electric>を付与します。<tag=ElectricStack>が{VAL0}増加します。
         /// </summary>
         public static ModArcaneWeapon DaggerMagitech { get; } = ModArcaneWeapon.CreateDebuff("DaggerMagitech", 1205, "ELECTRIC", 40, "ELECTRIC_STACK/1");
+        /// <summary>
+        /// 冷凍ワカサギ
+        /// ArcaneWeapon_DaggerGlacier_Affix
+        /// 冷凍
+        /// ArcaneWeapon_DaggerGlacier_Effect
+        /// <tag=WeaponAction_SpecialAttack>が命中した時、{DEBUFF}を{COUNT}回付与します。
+        /// </summary>
+        public static ModArcaneWeapon DaggerGlacier { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_ApplyFreeze_OnlySpecialAttack>("DaggerGlacier", 1216);
+        /// <summary>
+        /// ドリーヴァ
+        /// ArcaneWeapon_DaggerFrostRelic_Affix
+        /// ドリーヴァの
+        /// ArcaneWeapon_DaggerFrostRelic_Effect
+        /// <tag=FrostRelicDamage>が{VAL0}減少しますが、<tag=Artifact><tag=ITEM:1208>が「吹雪の鎌」に変更されます。ダメージ量が50%減少しますが、照準地点へ飛んでいき、敵を持続的に攻撃します。
+        /// </summary>
+        public static ModArcaneWeapon DaggerFrostRelic { get; } = ModArcaneWeapon.CreateStatsFlag("DaggerFrostRelic", 1217, "IceHammerScythe".ToUpperInvariant(), 1, "FROST_RELIC_DAMAGE/-15");
         /// <summary>
         /// ソリス・ユバル
         /// ArcaneWeapon_CrossbowFlameSword_Affix

@@ -11,19 +11,19 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         {
             base.OnEnabledEffect();
             NetworkAvatar.AddCustomStatUnsafe("AIRSLASHMINI", 1);
-            NetworkAvatar.AddCustomStatUnsafe("AIRSLASHHASTE", 50);
+            NetworkAvatar.AddCustomStatUnsafe("AIRSLASHHASTE", 40);
         }
         public override void OnDisabledEffect()
         {
             base.OnDisabledEffect();
             NetworkAvatar.AddCustomStatUnsafe("AIRSLASHMINI", -1);
-            NetworkAvatar.AddCustomStatUnsafe("AIRSLASHHASTE", -50);
+            NetworkAvatar.AddCustomStatUnsafe("AIRSLASHHASTE", -40);
         }
         public override Loc.KeywordValue[] BuildKeywords()
         {
             return new Loc.KeywordValue[]
             {
-                new Loc.KeywordValue("VAL0", "50")
+                new Loc.KeywordValue("VAL0", "40")
             };
         }
     }
