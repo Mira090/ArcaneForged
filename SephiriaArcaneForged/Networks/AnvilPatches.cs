@@ -216,6 +216,8 @@ namespace SephiriaArcaneForged.Networks
             static void UpdateListPatch(UI_WeaponEnhancementPanel __instance)
             {
                 var controller = __instance.GetWeaponController();
+                var current = controller.currentWeapon;
+                var weaponEntity = current == null ? null : WeaponDatabase.FindWeaponById(current.entityId);
                 var buttons = __instance.GetButtons();
                 if (controller == null || !controller.CanEquipArcaneWeapon() || buttons == null)
                     return;
@@ -223,6 +225,8 @@ namespace SephiriaArcaneForged.Networks
                 {
                     foreach (EnhancementMetadata item in ArcaneWeaponDatabase.GetAll().Select(x => new EnhancementMetadata() { enhanced = x.weapon }))
                     {
+                        if (weaponEntity != null && item.enhanced.id == weaponEntity.id)
+                            continue;
                         UI_WeaponEnhancementButton button = ((!(controller.currentWeapon is WeaponSimple_Crossbow)) ? UnityEngine.Object.Instantiate(__instance.buttonPrefab, __instance.tableZone) : UnityEngine.Object.Instantiate(__instance.buttonPrefab_Crossbow, __instance.tableZone));
                         button.SetWeaponMethod(__instance, controller.currentWeapon, item);
                         button.OnSelect += __instance.OnSelect;

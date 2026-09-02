@@ -86,7 +86,7 @@ namespace SephiriaArcaneForged.Registries
         }
         public static EnhancementMetadata GetRandomEnhancement(Random random, WeaponEntity current, WeaponEntity[] alreadyList)
         {
-            var weapons = GetAll().Where(x => alreadyList == null || alreadyList.Length == 0 || !alreadyList.Contains(x.weapon)).ToList();
+            var weapons = GetAll().Where(x => alreadyList == null || alreadyList.Length == 0 || !alreadyList.Contains(x.weapon)).Where(x => current == null || x.id != current.id).ToList();
             if (weapons.Count == 0)
                 return new EnhancementMetadata();
             var index = random.Next(0, weapons.Count);
