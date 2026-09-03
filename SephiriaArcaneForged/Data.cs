@@ -218,6 +218,14 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon CrossbowFrostRelic { get; } = ModArcaneWeapon.CreateStats("CrossbowFrostRelic", 113, "FROST_RELIC_DAMAGE/20");
         /// <summary>
+        /// 巨大クロスボウ：雲集め器
+        /// ArcaneWeapon_CrossbowDarkCloud_Affix
+        /// 下層雲地帯の
+        /// ArcaneWeapon_CrossbowDarkCloud_Effect
+        /// <tag=WeaponAction_Guard>成功時、{DURATION}秒間<tag=LowCloudArea>を生成します。
+        /// </summary>
+        //public static ModArcaneWeapon CrossbowDarkCloud { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_LowCloudArea>("CrossbowDarkCloud", 115).SetEffect("WeaponAddon_Staff_Cloud_Effect");
+        /// <summary>
         /// 紫甲蜂弩
         /// ArcaneWeapon_CrossbowPoison_Affix
         /// 毒々しい
@@ -321,6 +329,22 @@ namespace SephiriaArcaneForged
         /// <tag=WeaponAction_DirectAttack>時、命中した敵に{PERCENT}の確率で<tag=Frostbite>を付与します。<tag=IceDamage>が{VAL0}増加します。
         /// </summary>
         public static ModArcaneWeapon StaffGlacier { get; } = ModArcaneWeapon.CreateDebuff("StaffGlacier", 523, "FROSTBITE", 30, "ICE_DAMAGE/5");
+        /// <summary>
+        /// ビデュカ
+        /// ArcaneWeapon_StaffMagitech_Affix
+        /// チャクラムの
+        /// ArcaneWeapon_StaffMagitech_Effect
+        /// <tag=ITEM:1013>の回転半径が照準点まで伸びます。
+        /// </summary>
+        public static ModArcaneWeapon StaffMagitech { get; } = ModArcaneWeapon.CreateFlag("StaffMagitech", 526, "HOMINGCHAKRAM");
+        /// <summary>
+        /// ネポラクス
+        /// ArcaneWeapon_StaffDarkCloud_Affix
+        /// 雲の
+        /// ArcaneWeapon_StaffDarkCloud_Effect
+        /// <tag=WeaponAction_DashAttack>命中時、対象に<tag=DarkCloud>が<tag=CONST:throwCloudBottleDamagePercent>%のダメージで即時発動します。
+        /// </summary>
+        public static ModArcaneWeapon StaffDarkCloud { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_DarkCloudByDashAttack>("StaffDarkCloud", 528);
 
 
         public static void Init()

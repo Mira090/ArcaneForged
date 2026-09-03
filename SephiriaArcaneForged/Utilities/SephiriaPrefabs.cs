@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace SephiriaArcaneForged.Utilities
 {
@@ -111,5 +112,22 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static CharacterBuff _throwCompBuffPrefab;
+        /// <summary>
+        /// LowCloudArea
+        /// </summary>
+        public static ScriptableFx LowCloudFxPrefab
+        {
+            get
+            {
+                if (_lowCloudFxPrefab == null)
+                {
+                    var gameObject = Resources.Load<GameObject>("ScriptableFx/LowCloudFx");
+                    if (gameObject != null && gameObject.TryGetComponent<ScriptableFx_Sprite>(out var fx))
+                        _lowCloudFxPrefab = fx;
+                }
+                return _lowCloudFxPrefab;
+            }
+        }
+        private static ScriptableFx _lowCloudFxPrefab;
     }
 }
