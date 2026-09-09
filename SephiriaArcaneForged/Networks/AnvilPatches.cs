@@ -399,7 +399,7 @@ namespace SephiriaArcaneForged.Networks
             [HarmonyPostfix]
             static void SetWeaponPatch(UI_WeaponIcon __instance, WeaponSimple weapon)
             {
-                if (weapon == null)
+                if (weapon == null || weapon.Networkowner == null)
                     return;
                 var arcane = weapon.Networkowner.GetCurrentArcaneWeapon();
 
