@@ -42,6 +42,14 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon WandLightning { get; } = ModArcaneWeapon.CreateFlag("WandLightning", 1010, Events.ChangeToLightning);
         /// <summary>
+        /// プリズムマジックワンド
+        /// ArcaneWeapon_WandElemental_Affix
+        /// 魔法の
+        /// ArcaneWeapon_WandElemental_Effect
+        /// <tag=WeaponAction_DirectAttack>が<tag=HighestElementalDamage>ベースに変更されます。
+        /// </summary>
+        public static ModArcaneWeapon WandElemental { get; } = ModArcaneWeapon.CreateFlag("WandElemental", 1030, Events.ChangeToHighest);
+        /// <summary>
         /// 氷河の刃
         /// ArcaneWeapon_SwordShieldFrostSword_Affix
         /// 氷河の
