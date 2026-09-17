@@ -416,7 +416,7 @@ namespace SephiriaArcaneForged
         /// <tag=WeaponAction_Guard>成功後、<tag=WeaponAction_BasicAttack>時に<tag=WeaponAction_StaffCrystalExplosion>が発動します。
         /// </summary>
         public static ModArcaneWeapon StaffSpecial { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_CrystalExplosion>("StaffSpecial", 510)
-            .SetCondition(ModArcaneWeapon.EConditionType.HasGuard);
+            .SetCondition(ModArcaneWeapon.EConditionType.HasGuard).SetDamageId();
         /// <summary>
         /// 突撃槍ルアシュレア
         /// ArcaneWeapon_StaffDashDamage_Affix
