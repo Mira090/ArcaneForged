@@ -424,10 +424,5 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                 GeneratedSyncVarDeserialize(ref solisMissioStack, _Mirror_SyncVarHookDelegate_solisMissioStack, reader.ReadVarInt());
             }
         }
-
-        private string GetWeaponHUDID()
-        {
-            return $"Weapon_{entityID}";
-        }
     }
 }

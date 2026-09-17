@@ -235,6 +235,10 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         {
             return $"Charm_{itemInstanceID}";
         }
+        public virtual string GetWeaponHUDID()
+        {
+            return $"Weapon_{entityID}";
+        }
         public virtual void LoadItemOnServer(ISaveData saveData)
         {
         }
@@ -307,7 +311,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         }
         public void Attack(float percent = 100f)
         {
-            Attack(WeaponController.attackDirection, percent);
+            Attack(GetAimedDelta(), percent);
         }
         public virtual void Attack(Vector3 aimedDelta, float percent = 100)
         {

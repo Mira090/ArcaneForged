@@ -105,6 +105,23 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData _lightningSpearFireData;
+        public static NewWeaponFireData CrystalExplosionFireData
+        {
+            get
+            {
+                if (_crystalExplosionFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(510);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_QuartterStaff>(out var sword))
+                        return null;
+                    _crystalExplosionFireData = sword.crystalExplosionFireData;
+                }
+                return _crystalExplosionFireData;
+            }
+        }
+        private static NewWeaponFireData _crystalExplosionFireData;
         public static NewWeaponFireData HetaeFireData
         {
             get

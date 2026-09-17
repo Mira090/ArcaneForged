@@ -409,6 +409,15 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon StaffCritical { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_DamageByLowCritical>("StaffCritical", 507).SetEffect("WeaponAddon_StaffT3Crit_Effect");
         /// <summary>
+        /// 聖海の欠片
+        /// ArcaneWeapon_StaffSpecial_Affix
+        /// 聖海の
+        /// ArcaneWeapon_StaffSpecial_Effect
+        /// <tag=WeaponAction_Guard>成功後、<tag=WeaponAction_BasicAttack>時に<tag=WeaponAction_StaffCrystalExplosion>が発動します。
+        /// </summary>
+        public static ModArcaneWeapon StaffSpecial { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_CrystalExplosion>("StaffSpecial", 510)
+            .SetCondition(ModArcaneWeapon.EConditionType.HasGuard);
+        /// <summary>
         /// 突撃槍ルアシュレア
         /// ArcaneWeapon_StaffDashDamage_Affix
         /// ルアシュレアの
