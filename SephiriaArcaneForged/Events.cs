@@ -20,6 +20,7 @@ namespace SephiriaArcaneForged
         #endregion
         
 
+        public static readonly string ChangeToPhysical = "WeaponToPhysicalDamage".ToUpperInvariant();
         public static readonly string ChangeToFire = "WeaponToFireDamage".ToUpperInvariant();
         public static readonly string ChangeToIce= "WeaponToIceDamage".ToUpperInvariant();
         public static readonly string ChangeToLightning = "WeaponToLightningDamage".ToUpperInvariant();
@@ -31,6 +32,8 @@ namespace SephiriaArcaneForged
         {
             static void Prefix(UnitAvatar owner, ref string relatedStatFormula)
             {
+                if (owner.GetCustomStatUnsafe(ChangeToPhysical) > 0)
+                    relatedStatFormula = "PhysicalDamage".ToUpperInvariant();
                 if (owner.GetCustomStatUnsafe(ChangeToFire) > 0)
                     relatedStatFormula = "FireDamage".ToUpperInvariant();
                 if (owner.GetCustomStatUnsafe(ChangeToIce) > 0)
@@ -40,6 +43,101 @@ namespace SephiriaArcaneForged
                 if (owner.GetCustomStatUnsafe(ChangeToHighest) > 0)
                     relatedStatFormula = "Highest".ToUpperInvariant();
             }
+        }
+
+        [HarmonyPatch(typeof(UnitAvatar), nameof(UnitAvatar.ApplyDamage))]
+        public static class DamagePatch
+        {
+            static void Prefix(DamageInstance damage)
+            {
+                if(damage.origin is UnitAvatar avatar && damage.fromType == EDamageFromType.DirectAttack)
+                {
+                    damage.elementalType = ModifyElementalType(avatar, damage.elementalType);
+                }
+            }
+        }
+
+        static EDamageElementalType ModifyElementalType(UnitAvatar owner, EDamageElementalType elementalType)
+        {
+            if (owner == null)
+                return elementalType;
+            if (owner.GetCustomStatUnsafe(ChangeToPhysical) > 0)
+            {
+                elementalType = EDamageElementalType.Physical;
+            }
+            if (owner.GetCustomStatUnsafe(ChangeToFire) > 0)
+            {
+                elementalType = EDamageElementalType.Fire;
+            }
+            if (owner.GetCustomStatUnsafe(ChangeToIce) > 0)
+            {
+                elementalType = EDamageElementalType.Ice;
+            }
+            if (owner.GetCustomStatUnsafe(ChangeToLightning) > 0)
+            {
+                elementalType = EDamageElementalType.Lightning;
+            }
+            if (owner.GetCustomStatUnsafe(ChangeToHighest) > 0)
+            {
+                int fire = owner.GetCustomStatUnsafe("FIREDAMAGE");
+                int ice = owner.GetCustomStatUnsafe("ICEDAMAGE");
+                int lightning = owner.GetCustomStatUnsafe("LIGHTNINGDAMAGE");
+                int physical = owner.GetCustomStatUnsafe("PHYSICALDAMAGE");
+                int max = Mathf.Max(fire, ice, lightning, physical);
+                if (fire == max && ice == max && lightning == max && physical == max)
+                {
+                    elementalType = EDamageElementalType.Chaos;
+                }
+                else if (ice == max && lightning == max && physical == max)
+                {
+                    elementalType = EDamageElementalType.Chaos;
+                }
+                else if (fire == max && lightning == max && physical == max)
+                {
+                    elementalType = EDamageElementalType.Chaos;
+                }
+                else if (fire == max && ice == max && physical == max)
+                {
+                    elementalType = EDamageElementalType.Chaos;
+                }
+                else if (fire == max && ice == max && lightning == max)
+                {
+                    elementalType = EDamageElementalType.Chaos;
+                }
+                else if (fire == max && ice == max)
+                {
+                    elementalType = EDamageElementalType.FireAndIce;
+                }
+                else if (fire == max && lightning == max)
+                {
+                    elementalType = EDamageElementalType.FireAndLightning;
+                }
+                else if (ice == max && lightning == max)
+                {
+                    elementalType = EDamageElementalType.IceAndLightning;
+                }
+                else if (fire == max)
+                {
+                    elementalType = EDamageElementalType.Fire;
+                }
+                else if (ice == max)
+                {
+                    elementalType = EDamageElementalType.Ice;
+                }
+                else if (lightning == max)
+                {
+                    elementalType = EDamageElementalType.Lightning;
+                }
+                else
+                {
+                    elementalType = EDamageElementalType.Physical;
+                }
+            }
+            if (owner.GetCustomStatUnsafe(ChangeToChaos) > 0)
+            {
+                elementalType = EDamageElementalType.Chaos;
+            }
+            return elementalType;
         }
         static void ModifyElementalType(NewWeaponFireData __instance, UnitAvatar owner, ref EDamageElementalType elementalType)
         {
@@ -118,6 +216,7 @@ namespace SephiriaArcaneForged
                 elementalType = EDamageElementalType.Chaos;
             }
         }
+        /*
         [HarmonyPatch(typeof(NewWeaponFireData), "InstantiateProjectile")]
         public static class ProjectilePatch
         {
@@ -181,6 +280,8 @@ namespace SephiriaArcaneForged
             {
                 ModifyElementalType(__instance, owner, ref elementalType);
             }
+        }*/
+
         }
     }
 }
