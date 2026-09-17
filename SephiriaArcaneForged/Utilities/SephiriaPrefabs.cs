@@ -8,6 +8,13 @@ namespace SephiriaArcaneForged.Utilities
 {
     public static class SephiriaPrefabs
     {
+        public static CharacterDebuff Burn => CombatManager.Instance.burnDebuffPrefab;
+        public static CharacterDebuff Electric => CombatManager.Instance.electricDebuffPrefab;
+        public static CharacterDebuff Frostbite => CombatManager.Instance.frostbiteDebuffPrefab;
+        public static CharacterDebuff Freeze => (Frostbite as CharacterDebuff_Frostbite).freezeDebuffPrefab;
+        /// <summary>
+        /// ピアオラ議事槌
+        /// </summary>
         public static ScriptableFx RingFxPrefab
         {
             get
@@ -18,6 +25,32 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static ScriptableFx _ringFxPrefab;
+        /// <summary>
+        /// 灰の舞い
+        /// </summary>
+        public static GameObject DashAttackFxPrefab
+        {
+            get
+            {
+                if (_dashAttackFxPrefab == null)
+                    _dashAttackFxPrefab = WeaponDatabase.FindWeaponById(6).mainWeaponPrefab.GetComponent<WeaponAddon_DashAttack>().dashAttackFxPrefab;
+                return _dashAttackFxPrefab;
+            }
+        }
+        private static GameObject _dashAttackFxPrefab;
+        /// <summary>
+        /// ソリス・ミッシオ
+        /// </summary>
+        public static GameObject[] SolisMissioFxPrefabs
+        {
+            get
+            {
+                if (_solisMissioFxPrefabs == null || _solisMissioFxPrefabs.Length == 0)
+                    _solisMissioFxPrefabs = WeaponDatabase.FindWeaponById(1025).mainWeaponPrefab.GetComponent<WeaponSimple_SwordAndShield>().solisMissioFxPrefabs;
+                return _solisMissioFxPrefabs;
+            }
+        }
+        private static GameObject[] _solisMissioFxPrefabs;
         /// <summary>
         /// 敷居跨ぎのバフ効果
         /// </summary>
@@ -72,6 +105,23 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData _lightningSpearFireData;
+        public static NewWeaponFireData HetaeFireData
+        {
+            get
+            {
+                if (_hetaeFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1026);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_SwordAndShield>(out var sword))
+                        return null;
+                    _hetaeFireData = sword.haetaeStrikeAttackExplosionFireData;
+                }
+                return _hetaeFireData;
+            }
+        }
+        private static NewWeaponFireData _hetaeFireData;
         /// <summary>
         /// 杖を伸ばすバフ効果
         /// </summary>
@@ -112,6 +162,26 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static CharacterBuff _throwCompBuffPrefab;
+        /// <summary>
+        /// 14秒間ダメージ増幅20%
+        /// </summary>
+        public static CharacterBuff PerfectGuardBuffPrefab
+        {
+            get
+            {
+                if (_perfectGuardBuffPrefab == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(0005);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponAddon_PerfectGuardBuff>(out var addon))
+                        return null;
+                    _perfectGuardBuffPrefab = addon.buffPrefab;
+                }
+                return _perfectGuardBuffPrefab;
+            }
+        }
+        private static CharacterBuff _perfectGuardBuffPrefab;
         /// <summary>
         /// LowCloudArea
         /// </summary>

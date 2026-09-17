@@ -20,7 +20,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             WeaponController.OnSpecialAttackSwing -= OnSpecialAttackSwing;
         }
         public override NewWeaponFireData FireData => SephiriaPrefabs.LightningSpearFireData;
-        public override string DamageId => "ArcaneWeapon_LightningSpear";
+        public override string DamageId => "ArcaneWeapon_SwordShieldLightningSpear";
         public override float? DamageMultiplier => null;
         public override float AttackDashScale => 0f;
         private void OnSpecialAttackSwing(int idx)

@@ -4,6 +4,7 @@ using SephiriaArcaneForged.ArcaneWeapons;
 using SephiriaArcaneForged.Registries;
 using SephiriaArcaneForged.Utilities;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace SephiriaArcaneForged

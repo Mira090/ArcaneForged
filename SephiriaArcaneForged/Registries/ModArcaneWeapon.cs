@@ -66,6 +66,38 @@ namespace SephiriaArcaneForged.Registries
         }
         public static ModArcaneWeapon CreateFlag(string name, int weaponId, string stat, int value = 1)
             => CreateFlag<ArcaneWeapon_Flag>(name, weaponId, stat, value);
+        public static ModArcaneWeapon CreateFlags<T>(string name, int weaponId, params FlagStat[] stats) where T : ArcaneWeapon_Flags
+        {
+            return new ModArcaneWeapon()
+            {
+                Name = name,
+                ResourcePrefabName = $"ArcaneWeapon-{name}",
+                AffixString = new LocalizedString($"ArcaneWeapon_{name}_Affix"),
+                EffectString = new LocalizedString($"ArcaneWeapon_{name}_Effect"),
+                Id = weaponId,
+                Flags = stats,
+                ArcaneWeaponType = typeof(T)
+            };
+        }
+        public static ModArcaneWeapon CreateFlags(string name, int weaponId, params FlagStat[] stats)
+            => CreateFlags<ArcaneWeapon_Flags>(name, weaponId, stats);
+        public static ModArcaneWeapon CreatePerfectGuardBuff<T>(string name, int weaponId, string buffName, Func<CharacterBuff> buffPrefab, params string[] stats) where T : ArcaneWeapon_PerfectGuardBuff
+        {
+            return new ModArcaneWeapon()
+            {
+                Name = name,
+                ResourcePrefabName = $"ArcaneWeapon-{name}",
+                AffixString = new LocalizedString($"ArcaneWeapon_{name}_Affix"),
+                EffectString = new LocalizedString($"ArcaneWeapon_{name}_Effect"),
+                Id = weaponId,
+                Stats = stats,
+                BuffPrefab = buffPrefab,
+                BuffName = buffName,
+                ArcaneWeaponType = typeof(T)
+            };
+        }
+        public static ModArcaneWeapon CreatePerfectGuardBuff(string name, int weaponId, string buffName, Func<CharacterBuff> buffPrefab, params string[] stats)
+            => CreatePerfectGuardBuff<ArcaneWeapon_PerfectGuardBuff>(name, weaponId, buffName, buffPrefab, stats);
         public static ModArcaneWeapon CreateBuff<T>(string name, int weaponId, string buffName, Func<CharacterBuff> buffPrefab, int percent = 100, params string[] stats) where T : ArcaneWeapon_AttackBuff
         {
             return new ModArcaneWeapon()
@@ -181,6 +213,11 @@ namespace SephiriaArcaneForged.Registries
                 flag.stat = Stat;
                 flag.value = Value;
             }
+            else if (arcane is ArcaneWeapon_Flags flags)
+            {
+                flags.stat = Flags.Select(x => x.stat).ToArray();
+                flags.value = Flags.Select(x => x.value).ToArray();
+            }
             else if (arcane is ArcaneWeapon_ApplyDebuff debuff)
             {
                 debuff.stat = Stat;
@@ -203,6 +240,10 @@ namespace SephiriaArcaneForged.Registries
             if(ResourcePrefab.TryGetComponent<ArcaneWeapon_AttackBuff>(out var buff))
             {
                 buff.buffPrefab = BuffPrefab?.Invoke();
+            }
+            if (ResourcePrefab.TryGetComponent<ArcaneWeapon_PerfectGuardBuff>(out var guard))
+            {
+                guard.buffPrefab = BuffPrefab?.Invoke();
             }
         }
         public virtual void Init(uint assetId)

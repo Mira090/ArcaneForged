@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 
 namespace SephiriaArcaneForged
@@ -17,6 +18,56 @@ namespace SephiriaArcaneForged
         public static List<ModArcaneWeapon> ArcaneWeapons { get; private set; } = new List<ModArcaneWeapon>();
 
 
+        /// <summary>
+        /// 星の輝き
+        /// ArcaneWeapon_SwordShieldRepost_Affix
+        /// 星の
+        /// ArcaneWeapon_SwordShieldRepost_Effect
+        /// アーティファクト<tag=ITEM:1051>とアーティファクト<tag=ITEM:1288>のカウンターが、最も近い敵に向かって発射される貫通攻撃に変わります。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldRepost { get; } = ModArcaneWeapon.CreateFlag("SwordShieldRepost", 0004, "RIPOSTELASER")
+            .SetCondition(ModArcaneWeapon.EConditionType.HasGuard);
+        /// <summary>
+        /// 冷たい怒り
+        /// ArcaneWeapon_SwordShieldGuard_Affix
+        /// 冷たい
+        /// ArcaneWeapon_SwordShieldGuard_Effect
+        /// <tag=WeaponAction_PerfectGuard>成功時、14秒間<tag=FinalDamage>が20%増加します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldGuard { get; } = ModArcaneWeapon.CreatePerfectGuardBuff("SwordShieldGuard", 0005, "Buff", () => SephiriaPrefabs.PerfectGuardBuffPrefab)
+            .SetCondition(ModArcaneWeapon.EConditionType.HasGuard).SetEffect("WeaponAddon_PerfectGuardBuff_Effect");
+        /// <summary>
+        /// 岩剣
+        /// ArcaneWeapon_SwordShieldDefense_Affix
+        /// 岩の
+        /// ArcaneWeapon_SwordShieldDefense_Effect
+        /// <tag=WeaponAction_SpecialAttack>のダメージが<tag=Defense>2ごとに1%増加します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldDefense { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_SpecialAttackDamageByDefense>("SwordShieldDefense", 1020);
+        /// <summary>
+        /// 灰の舞い
+        /// ArcaneWeapon_SwordShieldDash_Affix
+        /// 灰の
+        /// ArcaneWeapon_SwordShieldDash_Effect
+        /// ダッシュ経路の敵に<tag=WeaponAction_DashAttack>の50%のダメージを与えます。（<tag=DashCount>消費時、2倍のダメージ）
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldDash { get; } = ModArcaneWeapon.Create<ArcaneWeapon_DashAttack>("SwordShieldDash", 0006);
+        /// <summary>
+        /// 天井知らず
+        /// ArcaneWeapon_SwordShieldBasic_Affix
+        /// 天井知らずの
+        /// ArcaneWeapon_SwordShieldBasic_Effect
+        /// <tag=BasicAttackDamage>が{VAL0}増加しますが、<tag=SpecialAttackCost>が{VAL1}増加します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldBasic { get; } = ModArcaneWeapon.CreateStats("SwordShieldBasic", 0007, "BASIC_ATTACK_DAMAGE/33", "SPECIAL_ATTACK_COST_REDUCTION/-50");
+        /// <summary>
+        /// 閃光のレイピア
+        /// ArcaneWeapon_SwordShieldRapier_Affix
+        /// 閃光の
+        /// ArcaneWeapon_SwordShieldRapier_Effect
+        /// <tag=WeaponAction_DirectAttack>が<tag=PhysicalDamage>ベースに変更され、<tag=AttackSpeed>が{VAL0}増加します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldRapier { get; } = ModArcaneWeapon.CreateStatsFlag("SwordShieldRapier", 1007, Events.ChangeToPhysical, 1, "ATTACK_SPEED/20");
         /// <summary>
         /// 火炎の視線
         /// ArcaneWeapon_WandFire_Affix
@@ -66,6 +117,14 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon SwordShieldFrostHammer { get; } = ModArcaneWeapon.CreateStatsFlag("SwordShieldFrostHammer", 1015, "DashAttackIceHammer".ToUpperInvariant(), 1, "FROST_RELIC_DAMAGE/-12");
         /// <summary>
+        /// 霜柱の花園
+        /// ArcaneWeapon_SwordShieldGlacier_Affix
+        /// 霜柱の
+        /// ArcaneWeapon_SwordShieldGlacier_Effect
+        /// アーティファクト<tag=ITEM:1139>発動時、プレイヤーの周囲を公転し、クールダウンがなくなります。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldGlacier { get; } = ModArcaneWeapon.CreateFlag("SwordShieldGlacier", 1029, "ICICLEVINEORBIT").SetEffect("WeaponAddon_IcicleVine_Effect");
+        /// <summary>
         /// バリスタソード
         /// ArcaneWeapon_SwordShieldMiniBallista_Affix
         /// バリスタの
@@ -80,7 +139,58 @@ namespace SephiriaArcaneForged
         /// ArcaneWeapon_SwordShieldLightningSpear_Effect
         /// <tag=WeaponAction_SpecialAttack>をした時、<tag=DarkCloud>を4ではなく{CONSUME}消費して<tag=WeaponAction_LightningSpear>が発動します。
         /// </summary>
-        public static ModArcaneWeapon SwordShieldLightningSpear { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_LightningSpear>("SwordShieldLightningSpear", 1018);
+        public static ModArcaneWeapon SwordShieldLightningSpear { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_LightningSpear>("SwordShieldLightningSpear", 1018).SetDamageId();
+        /// <summary>
+        /// 眩い静寂
+        /// ArcaneWeapon_SwordShieldMagitech_Affix
+        /// 眩い
+        /// ArcaneWeapon_SwordShieldMagitech_Effect
+        /// アーティファクト<tag=ITEM:1239>の攻撃回数が{VAL1}回増加し、ダメージが{VAL0}増加します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldMagitech { get; } = ModArcaneWeapon.CreateFlags("SwordShieldMagitech", 1028, ModArcaneWeapon.Flag("ELECTRICEARRINGDAMAGE", 100), ModArcaneWeapon.Flag("ELECTRICEARRINGCOUNT"));
+        /// <summary>
+        /// ソリス・ミッシオ
+        /// ArcaneWeapon_SwordShieldFlameSword_Affix
+        /// 発火する
+        /// ArcaneWeapon_SwordShieldFlameSword_Effect
+        /// <tag=MoveSpeed>が{VAL0}減少しますが、<tag=WeaponAction_SolisMissio>効果を獲得します。<tag=WeaponAction_SolisMissio>効果はガード中でなくても<tag=FlameSword>を投げます。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldFlameSword { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_SolisMissio>("SwordShieldFlameSword", 1025, "MOVE_SPEED/-60");
+        /// <summary>
+        /// 炎喰いヘテ
+        /// ArcaneWeapon_SwordShieldEmber_Affix
+        /// 火を食べる
+        /// ArcaneWeapon_SwordShieldEmber_Effect
+        /// <tag=WeaponAction_DirectAttack>命中時、対象の<tag=Burn>デバフを解除して<tag=FireDamage>の100%の追加ダメージを与えます。解除した<tag=Burn>スタック1ごとにダメージが50%増加します。4スタック以上の場合、50%ではなく100%増加します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldEmber { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_Hetae>("SwordShieldEmber", 1026).SetDamageId();
+        /// <summary>
+        /// 黙殺
+        /// ArcaneWeapon_GreatSwordSpecial_Affix
+        /// 沈黙した
+        /// ArcaneWeapon_GreatSwordSpecial_Effect
+        /// <tag=SpecialAttackSpeed>が{VALUE}減少しますが、<tag=WeaponAction_Whirlwind>が即座にチャージされます。
+        /// </summary>
+        public static ModArcaneWeapon GreatSwordSpecial { get; } = ModArcaneWeapon.CreateFlag<ArcaneWeapon_SuperQuick>("GreatSwordSpecial", 0014, string.Empty, -20)
+            .SetCondition(ModArcaneWeapon.EConditionType.HasWhirlwind);
+        /// <summary>
+        /// 愛の視線
+        /// ArcaneWeapon_GreatSwordSpecialSpeed_Affix
+        /// 愛の
+        /// ArcaneWeapon_GreatSwordSpecialSpeed_Effect
+        /// <tag=CriticalChance>が{VAL0}、<tag=SpecialAttackSpeed>が{VALUE}%増加します。
+        /// </summary>
+        public static ModArcaneWeapon GreatSwordSpecialSpeed { get; } = ModArcaneWeapon.CreateStatsFlag("GreatSwordSpecialSpeed", 0015, ECustomStat.SpecialAttackSpeed.ToString().ToUpperInvariant(), 50, "CRITICAL/2000")
+            .SetCondition(ModArcaneWeapon.EConditionType.HasWhirlwind);
+        /// <summary>
+        /// 黒鉄のハルバード
+        /// ArcaneWeapon_GreatSwordSteal_Affix
+        /// 黒鉄の
+        /// ArcaneWeapon_GreatSwordSteal_Effect
+        /// <tag=WeaponAction_Whirlwind>の範囲が広がります。外縁にダメージを与えた時、50%の追加ダメージを与え、外縁ダメージの0.7%分<tag=HP>を回復します。
+        /// </summary>
+        public static ModArcaneWeapon GreatSwordSteal { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_OutsideBonus>("GreatSwordSteal", 1111)
+            .SetCondition(ModArcaneWeapon.EConditionType.UseWhirlwind).SetEffect("WeaponAddon_WhirlwindOutside_Effect");
         /// <summary>
         /// 紅蛇の粉砕
         /// ArcaneWeapon_GreatSwordEmber_Affix
@@ -97,6 +207,15 @@ namespace SephiriaArcaneForged
         /// <tag=FlameSword>が<tag=WeaponAction_DirectAttack>時に追加で{VALUE}回発動します。
         /// </summary>
         public static ModArcaneWeapon GreatSwordFlameSword { get; } = ModArcaneWeapon.CreateFlag("GreatSwordFlameSword", 1124, "FLAMESWORDADDITIONALATTACKFROMWEAPON");
+        /// <summary>
+        /// 万年寒剣
+        /// ArcaneWeapon_GreatSwordDamage_Affix
+        /// 万年の
+        /// ArcaneWeapon_GreatSwordDamage_Effect
+        /// <tag=WeaponAction_DirectAttack>の追加ダメージ効果の属性ダメージ割合が{VALUE}%増加します。
+        /// </summary>
+        public static ModArcaneWeapon GreatSwordDamage { get; } = ModArcaneWeapon.CreateFlag("GreatSwordDamage", 1105, "ADDITIONALELEMENTALDAMAGEBONUS", 35)
+            .SetCondition(ModArcaneWeapon.EConditionType.AdditionalElementalDamage);
         /// <summary>
         /// つららの剣
         /// ArcaneWeapon_GreatSwordGlacier_Affix
@@ -152,7 +271,7 @@ namespace SephiriaArcaneForged
         /// ArcaneWeapon_DaggerDash_Effect
         /// <tag=Dash>を使用すると、<tag=WeaponAction_Dagger_BladeZone>を放ちます。
         /// </summary>
-        public static ModArcaneWeapon DaggerDash { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_EnhancedDashAttack>("DaggerDash", 26);
+        public static ModArcaneWeapon DaggerDash { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_EnhancedDashAttack>("DaggerDash", 26).SetDamageId();
         /// <summary>
         /// 絶対羨望
         /// ArcaneWeapon_DaggerFinal_Affix
@@ -378,9 +497,20 @@ namespace SephiriaArcaneForged
                 ArcaneWeaponDatabase.Register(mod.ArcaneWeaponEntity);
             }
         }
+        public static void RegisterDamageIds(List<UnityEngine.Object> list)
+        {
+            foreach (var moditem in ArcaneWeapons)
+            {
+                if (moditem.HasDamageId)
+                {
+                    Core.Logger("New DamageId: " + moditem.DamageIdEntity.name);
+                    list.Add(moditem.DamageIdEntity);
+                }
+            }
+        }
         public static uint GetFirstAssetId()
         {
-            return 520;
+            return 1200;
         }
         public static uint GetNextAssetId(uint previous)
         {

@@ -18,7 +18,7 @@ namespace SephiriaArcaneForged
             }
         }
         #endregion
-        
+
 
         public static readonly string ChangeToPhysical = "WeaponToPhysicalDamage".ToUpperInvariant();
         public static readonly string ChangeToFire = "WeaponToFireDamage".ToUpperInvariant();
@@ -282,6 +282,21 @@ namespace SephiriaArcaneForged
             }
         }*/
 
+        [HarmonyPatch(typeof(Charm_GuardCounter), "UserCode_RpcCreateRipostelaserFx__Vector2__Single__Single")]
+        public static class RepostLaserPatch
+        {
+            static void Prefix(Charm_GuardCounter __instance)
+            {
+                if(__instance.ripostelaserFxPrefab == null)
+                {
+                    var weapon = ItemDatabase.FindItemById(1051);
+                    if (weapon == null)
+                        return;
+                    if (!weapon.resourcePrefab.TryGetComponent<Charm_GuardCounter>(out var charm))
+                        return;
+                    __instance.ripostelaserFxPrefab = charm.ripostelaserFxPrefab;
+                }
+            }
         }
     }
 }
