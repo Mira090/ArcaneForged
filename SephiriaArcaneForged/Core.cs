@@ -75,5 +75,46 @@ namespace SephiriaArcaneForged
 
             base.OnModUnloaded();
         }
+        [HarmonyPatch(typeof(Resources), nameof(Resources.LoadAll), new Type[] { typeof(string), typeof(Type) })]
+        public static class ResourcesLoadAllPatch
+        {
+            static void Postfix(string path, Type systemTypeInstance, ref UnityEngine.Object[] __result)
+            {
+                if (systemTypeInstance == typeof(EffectHUDEntity) && path == "EffectHUD")
+                {
+                    var list = __result.ToList();
+
+                    //Data.RegisterEffectHUDs(list);
+
+                    __result = list.ToArray();
+                }
+                if (systemTypeInstance == typeof(DamageIdEntity) && path == "DamageId")
+                {
+                    //一回
+                    var list = __result.ToList();
+
+                    Data.RegisterDamageIds(list);
+
+                    __result = list.ToArray();
+                }
+                if (systemTypeInstance == typeof(StatusEntity) && path == "Status")
+                {
+                    //複数回
+                    var list = __result.ToList();
+
+                    //Data.RegisterStatuses(list);
+
+                    __result = list.ToArray();
+                }
+                if (systemTypeInstance == typeof(KeywordEntity) && path == "Keyword")
+                {
+                    var list = __result.ToList();
+
+                    //Data.RegisterKeywords(list);
+
+                    __result = list.ToArray();
+                }
+            }
+        }
     }
 }

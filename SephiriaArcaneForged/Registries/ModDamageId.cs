@@ -72,7 +72,7 @@ namespace SephiriaArcaneForged.Registries
         {
             var damageId = new ModDamageId
             {
-                Name = new LocalizedString("ArcaneWeapon_" + id + "_Affix"),
+                Name = new CombinedLocalizedString("ArcaneWeapon_" + id + "_Affix", "WeaponAction_DirectAttack"),
                 Id = "ArcaneWeapon_" + id,
                 Category = DamageIdEntity.ECategory.Weapon,
                 IconFileName = AssetLoader.MiscPath + "DealUIWeapon"

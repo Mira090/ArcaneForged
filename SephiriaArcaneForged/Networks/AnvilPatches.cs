@@ -12,9 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 using UnityEngine.UI;
-using static UnityEngine.InputSystem.HID.HID;
 using Random = System.Random;
 
 namespace SephiriaArcaneForged.Networks
@@ -130,7 +128,7 @@ namespace SephiriaArcaneForged.Networks
                     }
                     for (int i = 0; i < count; i++)
                     {
-                        WeaponEntity[] alreadyList = __instance.localWeaponList.Select(x => x.enhanced).ToArray();
+                        var alreadyList = __instance.localWeaponList.Select(x => x.enhanced).ToList();
                         var randomEnhancement = ArcaneWeaponDatabase.GetRandomEnhancement(random, weaponEntity, alreadyList);
                         if (randomEnhancement.enhanced == null)
                             continue;
@@ -160,15 +158,16 @@ namespace SephiriaArcaneForged.Networks
                 int seed = __instance.RandomID + player.RandomID + __instance.localRerollSeedOffset;
                 Debug.Log("Reroll local weapon list seed: " + seed.ToString());
                 Random random = new Random(seed);
+                var alreadyList = __instance.localWeaponList.Select(x => x.enhanced).ToList();
                 __instance.localWeaponList.Clear();
                 int count = EnhanceSlotCount;
                 count += player.GetCustomStatUnsafe("EXTRAWEAPONCHOICES");
                 for (int i = 0; i < count; i++)
                 {
-                    WeaponEntity[] alreadyList = __instance.localWeaponList.Select(x => x.enhanced).ToArray();
                     var randomEnhancement = ArcaneWeaponDatabase.GetRandomEnhancement(random, weaponEntity, alreadyList);
                     if (randomEnhancement.enhanced == null)
                         continue;
+                    alreadyList.Add(randomEnhancement.enhanced);
                     __instance.localWeaponList.Add(randomEnhancement);
                 }
                 if (UIManager.Instance)
@@ -223,7 +222,7 @@ namespace SephiriaArcaneForged.Networks
                     return;
                 if(__instance.GetAnvil() == null)
                 {
-                    foreach (EnhancementMetadata item in ArcaneWeaponDatabase.GetAll().Select(x => new EnhancementMetadata() { enhanced = x.weapon }))
+                    foreach (EnhancementMetadata item in ArcaneWeaponDatabase.GetAll(weaponEntity).Select(x => new EnhancementMetadata() { enhanced = x.weapon }))
                     {
                         if (weaponEntity != null && item.enhanced.id == weaponEntity.id)
                             continue;
@@ -258,7 +257,7 @@ namespace SephiriaArcaneForged.Networks
                 var arcane = ArcaneWeaponDatabase.FindWeaponById(enhancementMetadata.enhanced);
                 if (arcane == null)
                     return;
-                __instance.effectText.text = arcane.GetEffectText();
+                __instance.effectText.text = arcane.GetEffectText(false);
             }
         }
         [HarmonyPatch(typeof(UI_WeaponTooltip))]
@@ -266,6 +265,7 @@ namespace SephiriaArcaneForged.Networks
         {
             public static UI_SimpleTextBox ArcaneTextBox;
             public static readonly LocalizedString AffixSpace = new LocalizedString("UI_ArcaneWeapon_AffixSpace");
+            public static string LocalizedAffixSpace => AffixSpace.ToString().Replace("-", "");
 
             [HarmonyPatch(nameof(UI_WeaponTooltip.Open))]
             [HarmonyPostfix]
@@ -314,7 +314,7 @@ namespace SephiriaArcaneForged.Networks
                     if (arcane == null)
                         return;
                     ArcaneTextBox.gameObject.SetActive(true);
-                    ArcaneTextBox.SetText(arcane.GetEffectText());
+                    ArcaneTextBox.SetText(arcane.GetEffectText(true));
                 }
                 else//装備中の場合
                 {
@@ -323,7 +323,7 @@ namespace SephiriaArcaneForged.Networks
                         return;
                     ArcaneTextBox.gameObject.SetActive(true);
                     ArcaneTextBox.SetText(arcane.GetEffectText());
-                    __instance.weaponNameText.text = $"<color=#E5D6FF>{arcane.GetAffixText()}{AffixSpace.ToString().Replace("-", "")}{weaponEntity.aName}</color>";
+                    __instance.weaponNameText.text = $"<color=#E5D6FF>{arcane.GetAffixText()}{LocalizedAffixSpace}{weaponEntity.aName}</color>";
                 }
             }
             [HarmonyPatch("OpenKeywordsCoroutine")]

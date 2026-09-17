@@ -2,6 +2,7 @@
 using SephiriaArcaneForged.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -9,6 +10,32 @@ namespace SephiriaArcaneForged.Registries
 {
     public class ModArcaneWeapon
     {
+        public enum EConditionType
+        {
+            HasGuard,
+            HasReload,
+            HasPary,
+            HasFury,
+            HasSweep,
+            HasWhirlwind,
+            HasSealth,
+            UseWhirlwind,
+            AdditionalElementalDamage
+        }
+        public struct FlagStat
+        {
+            public string stat;
+            public int value;
+        }
+        public static FlagStat Flag(string stat, int value = 1)
+        {
+            return new FlagStat()
+            {
+                stat = stat,
+                value = value
+            };
+        }
+
         public static ModArcaneWeapon Create<T>(string name, int weaponId) where T : ArcaneWeapon_Basic
         {
             return new ModArcaneWeapon()
@@ -117,11 +144,14 @@ namespace SephiriaArcaneForged.Registries
         public LocalizedString AffixString { get; internal set; }
         public LocalizedString EffectString { get; internal set; }
         public Type ArcaneWeaponType { get; internal set; }
+        public Func<WeaponEntity, bool> Condition { get; internal set; }
+        public LocalizedString ConditionText { get; internal set; }
         public int Id { get; internal set; }
         public uint AssetId { get; internal set; }
         public string[] Stats { get; internal set; }
         public string Stat { get; internal set; }
         public int Value { get; internal set; }
+        public FlagStat[] Flags { get; internal set; }
         public string Debuff { get; internal set; }
         public int Percent { get; internal set; }
         public Func<CharacterBuff> BuffPrefab { get; internal set; }
@@ -194,6 +224,8 @@ namespace SephiriaArcaneForged.Registries
             entity.id = Id;
             entity.resourcePrefab = ResourcePrefab;
             entity.affix = AffixString;
+            entity.condition = Condition;
+            entity.conditionText = ConditionText;
             return entity;
         }
         public virtual void Dispose()

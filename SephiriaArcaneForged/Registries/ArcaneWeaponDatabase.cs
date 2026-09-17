@@ -48,6 +48,10 @@ namespace SephiriaArcaneForged.Registries
         {
             return weaponDictionary.Values.Where(x => x.weapon != null).ToList();
         }
+        public static List<ArcaneWeaponEntity> GetAll(WeaponEntity current)
+        {
+            return weaponDictionary.Values.Where(x => x.weapon != null && x.IsValid(current)).ToList();
+        }
         public static void Register(ArcaneWeaponEntity weapon)
         {
             if (weapon == null)
@@ -84,9 +88,9 @@ namespace SephiriaArcaneForged.Registries
 
             Debug.LogWarning(string.Format("[{0}] Arcane Weapon Modify: id {1} not found", Core.ModName, id));
         }
-        public static EnhancementMetadata GetRandomEnhancement(Random random, WeaponEntity current, WeaponEntity[] alreadyList)
+        public static EnhancementMetadata GetRandomEnhancement(Random random, WeaponEntity current, List<WeaponEntity> alreadyList)
         {
-            var weapons = GetAll().Where(x => alreadyList == null || alreadyList.Length == 0 || !alreadyList.Contains(x.weapon)).Where(x => current == null || x.id != current.id).ToList();
+            var weapons = GetAll(current).Where(x => alreadyList == null || alreadyList.Count == 0 || !alreadyList.Contains(x.weapon)).Where(x => current == null || x.id != current.id).ToList();
             if (weapons.Count == 0)
                 return new EnhancementMetadata();
             var index = random.Next(0, weapons.Count);

@@ -8,27 +8,29 @@ namespace SephiriaArcaneForged.Registries
 {
     public class ArcaneWeaponEntity : ScriptableObject
     {
-        [Serializable]
-        public class StatusGroup
-        {
-            public string statusID = "AP";
-
-            public int value = 0;
-        }
-
         public int id;
         public WeaponEntity weapon;
         public LocalizedString affix;
+        public Func<WeaponEntity, bool> condition;
+        public LocalizedString conditionText;
 
         public GameObject resourcePrefab;
 
-        public string GetEffectText()
+        public string GetEffectText(bool condition)
         {
-            if(resourcePrefab.TryGetComponent<ArcaneWeapon_Basic>(out var basic) && basic.effectsString != null)
+            var text = string.Empty;
+            if (condition && conditionText != null && !string.IsNullOrEmpty(conditionText.key))
+                text = "\r\n" + KeywordDatabase.Convert(KeywordDatabase.Convert(conditionText.ToString()));
+
+            if (resourcePrefab.TryGetComponent<ArcaneWeapon_Basic>(out var basic) && basic.effectsString != null)
             {
-                return KeywordDatabase.Convert(Loc.Convert(KeywordDatabase.Convert(basic.effectsString.ToString()), basic.BuildKeywords()));
+                return KeywordDatabase.Convert(Loc.Convert(KeywordDatabase.Convert(basic.effectsString.ToString()), basic.BuildKeywords())) + text;
             }
-            return "...";
+            return "..." + text;
+        }
+        public bool IsValid(WeaponEntity current)
+        {
+            return condition?.Invoke(current) ?? true;
         }
     }
 }
