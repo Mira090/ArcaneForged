@@ -20,7 +20,8 @@ namespace SephiriaArcaneForged.Registries
             HasWhirlwind,
             HasSealth,
             UseWhirlwind,
-            AdditionalElementalDamage
+            AdditionalElementalDamage,
+            HasBlade,
         }
         public struct FlagStat
         {

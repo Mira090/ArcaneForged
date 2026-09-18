@@ -115,5 +115,14 @@ namespace SephiriaArcaneForged.Utilities
                 yield return transform.GetChild(q);
             }
         }
+        /// <summary>
+        /// 「To_File_Name」を「TOFILENAME」に変換する
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static string ToSephiriaUpperId(this string property)
+        {
+            return property.ToUpperInvariant().Replace("_", "");
+        }
     }
 }

@@ -216,5 +216,65 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static ScriptableFx _lowCloudFxPrefab;
+        /// <summary>
+        /// アダマフの誓い
+        /// </summary>
+        public static GameObject MagicBladePrefab
+        {
+            get
+            {
+                if (_magicBladePrefab == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(414);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_Katana>(out var addon))
+                        return null;
+                    _magicBladePrefab = addon.magicBladePrefab;
+                }
+                return _magicBladePrefab;
+            }
+        }
+        private static GameObject _magicBladePrefab;
+        /// <summary>
+        /// アダマフの誓い
+        /// </summary>
+        public static GameObject NanmuStartFxPrefab
+        {
+            get
+            {
+                if (_nanmuStartFxPrefab == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(411);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_Katana>(out var addon))
+                        return null;
+                    _nanmuStartFxPrefab = addon.nanmuStartFxPrefab;
+                }
+                return _nanmuStartFxPrefab;
+            }
+        }
+        private static GameObject _nanmuStartFxPrefab;
+        /// <summary>
+        /// アダマフの誓い
+        /// </summary>
+        public static NewWeaponFireData[] NanmuExtraSwingFireDatas
+        {
+            get
+            {
+                if (_nanmuExtraSwingFireDatas == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(411);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_Katana>(out var addon))
+                        return null;
+                    _nanmuExtraSwingFireDatas = addon.nanmuExtraSwingFireDatas;
+                }
+                return _nanmuExtraSwingFireDatas;
+            }
+        }
+        private static NewWeaponFireData[] _nanmuExtraSwingFireDatas;
     }
 }

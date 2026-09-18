@@ -85,7 +85,7 @@ namespace SephiriaArcaneForged
                 {
                     var list = __result.ToList();
 
-                    //Data.RegisterEffectHUDs(list);
+                    Data.RegisterEffectHUDs(list);
 
                     __result = list.ToArray();
                 }

@@ -12,6 +12,7 @@ namespace SephiriaArcaneForged.Utilities
         public static readonly string UIPath = "UI\\";
         public static readonly string MiscPath = "Misc\\";
         public static readonly string LocalizationPath = "Localization\\";
+        public static readonly string EffectHUDPath = "EffectHUD\\";
         public static string GetAssetsPath(string name)
         {
             string dllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;

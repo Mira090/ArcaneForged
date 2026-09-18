@@ -10,12 +10,14 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using UnityEngine;
 
 namespace SephiriaArcaneForged
 {
     public static class Data
     {
         public static List<ModArcaneWeapon> ArcaneWeapons { get; private set; } = new List<ModArcaneWeapon>();
+        public static List<ModEffectHUD> EffectHUDs { get; private set; } = new List<ModEffectHUD>();
 
 
         /// <summary>
@@ -385,6 +387,15 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon KatanaCritical { get; } = ModArcaneWeapon.CreateStats("KatanaCritical", 410, "CRITICAL/2000");
         /// <summary>
+        /// 剣斬刀：破舞
+        /// ArcaneWeapon_KatanaSpeed_Affix
+        /// 乱舞の
+        /// ArcaneWeapon_KatanaSpeed_Effect
+        /// <tag=WeaponAction_DirectAttack>を通して剣撃を獲得します。剣撃が最大まで貯まると8秒間、<tag=WeaponAction_DirectAttack>で追加攻撃が発生します。
+        /// </summary>
+        public static ModArcaneWeapon KatanaSpeed { get; } = ModArcaneWeapon.Create<ArcaneWeapon_Nanmu>("KatanaSpeed", 411)
+            .SetCondition(ModArcaneWeapon.EConditionType.HasBlade);
+        /// <summary>
         /// ユイの短剣
         /// ArcaneWeapon_KatanaMagicCritical_Affix
         /// 煌びやかな
@@ -392,6 +403,14 @@ namespace SephiriaArcaneForged
         /// <tag=MagicCriticalChance>が{VAL0}増加します。
         /// </summary>
         public static ModArcaneWeapon KatanaMagicCritical { get; } = ModArcaneWeapon.CreateStats("KatanaMagicCritical", 413, "MAGIC_CRITICAL/3000");
+        /// <summary>
+        /// アダマフの誓い
+        /// ArcaneWeapon_KatanaMagicBlade_Affix
+        /// 誓いの
+        /// ArcaneWeapon_KatanaMagicBlade_Effect
+        /// 魔法を使用すると、敵に向かって飛び、ダメージを与える「魔力刀」を召喚します。（ダメージ：{DAMAGE}+失われている<tag=MP>の{PERCENT}）
+        /// </summary>
+        public static ModArcaneWeapon KatanaMagicBlade { get; } = ModArcaneWeapon.Create<ArcaneWeapon_MagicBlade>("KatanaMagicBlade", 414);
         /// <summary>
         /// 海の錘
         /// ArcaneWeapon_StaffExtend_Affix
@@ -483,6 +502,15 @@ namespace SephiriaArcaneForged
         public static ModArcaneWeapon StaffDarkCloud { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_DarkCloudByDashAttack>("StaffDarkCloud", 528);
 
 
+        /// <summary>
+        /// EffectHUD_KatanaGauge_Name
+        /// 剣撃
+        /// EffectHUD_KatanaGauge_FlavorText
+        /// <tag=WeaponAction_BasicAttack>が命中すると増加します。
+        /// </summary>
+        public static ModEffectHUD KatanaGaugeHUD { get; } = ModEffectHUD.CreateStackEffectHUD("KatanaGauge").SetHasNoStackText();
+
+
         public static void Init()
         {
             var type = typeof(Data);
@@ -495,6 +523,13 @@ namespace SephiriaArcaneForged
                 moditem.Init(assetId);
                 assetId = GetNextAssetId(assetId);
                 ArcaneWeapons.Add(moditem);
+            }
+            var pros3 = type.GetProperties(BindingFlags.Static | BindingFlags.Public).Where(p => p.PropertyType == typeof(ModEffectHUD) || p.PropertyType.IsSubclassOf(typeof(ModEffectHUD)));
+            foreach (var pro in pros3)
+            {
+                var moditem = pro.GetValue(type) as ModEffectHUD;
+                Core.Logger("New EffectHUD: " + pro.Name);
+                EffectHUDs.Add(moditem);
             }
         }
 
@@ -514,6 +549,56 @@ namespace SephiriaArcaneForged
                 {
                     Core.Logger("New DamageId: " + moditem.DamageIdEntity.name);
                     list.Add(moditem.DamageIdEntity);
+                }
+            }
+        }
+        public static void RegisterEffectHUDs(List<UnityEngine.Object> list)
+        {
+            GameObject stack = null;
+            GameObject buff = null;
+            foreach (var o in list)
+            {
+                if (o is EffectHUDEntity entity)
+                {
+                    if (entity.id == "ABANDONEDGOLDRING")
+                    {
+                        stack = entity.hudPrefab;
+                    }
+                }
+            }
+            foreach (var o in list)
+            {
+                if (o is EffectHUDEntity entity)
+                {
+                    if (entity.id == "FLAMEEATER")
+                    {
+                        buff = entity.hudPrefab;
+                    }
+                }
+            }
+            var names = new List<string>();
+            foreach (var item in list)
+            {
+                if (item is EffectHUDEntity entity)
+                {
+                    names.Add(entity.id);
+                }
+            }
+            foreach (var moditem in EffectHUDs)
+            {
+                if (names.Contains(moditem.Id))
+                    continue;
+                if (moditem.Type == ModEffectHUD.EffectHUDType.Stack && stack != null)
+                {
+                    var prefab = UnityEngine.Object.Instantiate(stack);
+                    moditem.SetResourcePrefab(prefab);
+                    list.Add(moditem.CreateEntity());
+                }
+                if (moditem.Type == ModEffectHUD.EffectHUDType.Buff && buff != null)
+                {
+                    var prefab = UnityEngine.Object.Instantiate(buff);
+                    moditem.SetResourcePrefab(prefab);
+                    list.Add(moditem.CreateEntity());
                 }
             }
         }
