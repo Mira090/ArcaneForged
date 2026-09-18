@@ -442,12 +442,19 @@ namespace SephiriaArcaneForged.Networks
                         iconImage.sprite = ForgedFrameSprite;
                 }
             }
-            //[HarmonyPatch(nameof(UI_WeaponIcon.OnSelect))]
-            //[HarmonyPostfix]
-            [Obsolete]
-            static void OnSelectPatch(UI_WeaponIcon __instance)
+
+            public static Sprite NotForgableSprite;
+            public static Sprite ForgableSprite;
+
+            [HarmonyPatch(nameof(UI_WeaponIcon.SetWeapon), new Type[] { typeof(WeaponEntity) })]
+            [HarmonyPostfix]
+            static void SetWeaponJournalPatch(UI_WeaponIcon __instance, WeaponEntity weapon)
             {
-                if (__instance.WeaponSimple == null)
+                if (weapon == null)
+                    return;
+                var arcane = ArcaneWeaponDatabase.FindWeaponById(weapon.id);
+
+                if (arcane == null)
                     return;
 
                 if (__instance.transform.childCount < 1)
@@ -455,21 +462,16 @@ namespace SephiriaArcaneForged.Networks
 
                 if (__instance.transform.GetChild(0).gameObject.TryGetComponent<Image>(out var iconImage))
                 {
-                    var arcane = __instance.WeaponSimple.Networkowner.GetCurrentArcaneWeapon();
-                    if (arcane == null)
-                    {
-                        if (NormalFrameSprite == null)
-                            NormalFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal");
-                        if (NormalFrameSprite != null)
-                            iconImage.sprite = NormalFrameSprite;
-                    }
-                    else
-                    {
-                        if (ForgedFrameSprite == null)
-                            ForgedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged");
-                        if (ForgedFrameSprite != null)
-                            iconImage.sprite = ForgedFrameSprite;
-                    }
+                    /*
+                    if (NotForgableSprite == null)
+                        NotForgableSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "InventorySlot_New1");
+                    if (NotForgableSprite != null)
+                        iconImage.sprite = NotForgableSprite;*/
+
+                    if (ForgableSprite == null)
+                        ForgableSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "InventorySlot_New1_Forgable");
+                    if (ForgableSprite != null)
+                        iconImage.sprite = ForgableSprite;
                 }
             }
         }
