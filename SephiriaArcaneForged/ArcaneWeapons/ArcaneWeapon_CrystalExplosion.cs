@@ -63,6 +63,8 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         {
             if (!canCrystalExplosion)
                 return;
+            canCrystalExplosion = false;
+            NetworkAvatar.DestroyEffectHUD(GetWeaponHUDID() + "_STAFF_CRYSTAL_EXPLOSION");
             Attack();
         }
         public override Vector3 FirePosition(WeaponControllerSimple simple)
