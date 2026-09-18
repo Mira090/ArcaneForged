@@ -355,6 +355,14 @@ namespace SephiriaArcaneForged
         /// </summary>
         //public static ModArcaneWeapon CrossbowDarkCloud { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_LowCloudArea>("CrossbowDarkCloud", 115).SetEffect("WeaponAddon_Staff_Cloud_Effect");
         /// <summary>
+        /// カリムの形状
+        /// ArcaneWeapon_CrossbowCompanion_Affix
+        /// カリムの
+        /// ArcaneWeapon_CrossbowCompanion_Effect
+        /// <tag=ITEM:1198>、<tag=ITEM:1199>、<tag=ITEM:1200>が2回攻撃し、与えるダメージが{VAL1}%増加します。
+        /// </summary>
+        public static ModArcaneWeapon CrossbowCompanion { get; } = ModArcaneWeapon.CreateFlags<ArcaneWeapon_Jellyfish>("CrossbowCompanion", 120, ModArcaneWeapon.Flag("JELLYFISHDOUBLEATTACK"), ModArcaneWeapon.Flag("JELLYFISHBASICDAMAGE", 25)).SetEffect("WeaponAddon_Jellyfish_Effect");
+        /// <summary>
         /// 紫甲蜂弩
         /// ArcaneWeapon_CrossbowPoison_Affix
         /// 毒々しい
