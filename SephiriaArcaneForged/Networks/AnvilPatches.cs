@@ -154,7 +154,7 @@ namespace SephiriaArcaneForged.Networks
                 if (weaponEntity == null)
                     return true;
                 if (!controller.CanEquipArcaneWeapon())
-                    return false;
+                    return true;
                 __instance.localRerollSeedOffset += 1000;
                 int seed = __instance.RandomID + player.RandomID + __instance.localRerollSeedOffset;
                 Core.Logger("Reroll local weapon list seed: " + seed.ToString());
