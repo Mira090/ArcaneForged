@@ -17,7 +17,7 @@ namespace SephiriaArcaneForged.Registries
             item.EffectString = new LocalizedString(key);
             return item;
         }
-        public static List<int> NoWhirlwindGreatSwords = new List<int> { 1119, 1102, 1103, 1121, 0017, 1117, 1118, 1120 };
+        public static List<int> NoWhirlwindGreatSwords = new List<int> { 1119, 1102, 1103, 1115, 1121, 0017, 1117, 1118, 1120 };
         public static T SetCondition<T>(this T item, EConditionType type) where T : ModArcaneWeapon
         {
             item.ConditionText = new LocalizedString("ArcaneWeapon_ConditionType_" + type.ToString());
