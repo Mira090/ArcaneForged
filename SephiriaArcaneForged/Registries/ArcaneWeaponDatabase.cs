@@ -88,12 +88,16 @@ namespace SephiriaArcaneForged.Registries
 
             Debug.LogWarning(string.Format("[{0}] Arcane Weapon Modify: id {1} not found", Core.ModName, id));
         }
-        public static EnhancementMetadata GetRandomEnhancement(Random random, WeaponEntity current, List<WeaponEntity> alreadyList)
+        public static EnhancementMetadata GetRandomEnhancement(Random random, WeaponEntity current, List<int> alreadyList)
         {
-            var weapons = GetAll(current).Where(x => alreadyList == null || alreadyList.Count == 0 || !alreadyList.Contains(x.weapon)).Where(x => current == null || x.id != current.id).ToList();
+            Core.Logger("GetRandomEnhancement");
+            Core.Logger("alreadyList: " + string.Join(", ", alreadyList.Select(x => WeaponDatabase.FindWeaponById(x).aName.ToString())));
+            var weapons = GetAll(current).Where(x => alreadyList == null || alreadyList.Count == 0 || !alreadyList.Contains(x.weapon.id)).Where(x => current == null || x.id != current.id).ToList();
+            Core.Logger("weapons: " + weapons.Count);
             if (weapons.Count == 0)
                 return new EnhancementMetadata();
             var index = random.Next(0, weapons.Count);
+            Core.Logger("selected: " + weapons[index].weapon.aName.ToString());
             return new EnhancementMetadata()
             {
                 enhanced = weapons[index].weapon
