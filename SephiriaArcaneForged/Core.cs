@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace SephiriaArcaneForged
 {
-    public class Core : HorayModBase
+    public class Core : WorkshopModBase
     {
         public static readonly string ModName = "ArcaneForged";
         public static void Logger(string message)
@@ -71,7 +71,7 @@ namespace SephiriaArcaneForged
 
             if (ModPatches != null)
             {
-                ModPatches.UnpatchSelf();
+                ModPatches.UnpatchAll();
             }
 
             base.OnModUnloaded();
