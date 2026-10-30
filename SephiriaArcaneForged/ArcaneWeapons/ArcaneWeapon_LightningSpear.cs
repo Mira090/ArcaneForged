@@ -28,10 +28,22 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             if(NetworkAvatar == null || NetworkAvatar.Inventory == null)
                 return;
             var combo = NetworkAvatar.Inventory.FindComboEffect(ItemCategories.DarkCloud);
-            if (combo is ComboEffect_DarkCloud darkCloud && darkCloud.isEnabled && darkCloud.NetworkdarkCloud >= consume)
+            if (combo is ComboEffect_DarkCloud darkCloud && darkCloud.isEnabled)
             {
-                darkCloud.NetworkdarkCloud -= consume;
-                Attack();
+                var keep = NetworkAvatar.GetCustomStatUnsafe("DARKCLOUDKEEP");
+                var total = 0;
+                for (int q = 0; q < consume; q++)
+                {
+                    if (!keep.Percent())
+                    {
+                        total++;
+                    }
+                }
+                if (darkCloud.NetworkdarkCloud >= total)
+                {
+                    darkCloud.NetworkdarkCloud -= total;
+                    Attack();
+                }
             }
         }
         public override Loc.KeywordValue[] BuildKeywords()
