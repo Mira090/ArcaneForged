@@ -362,7 +362,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                 {
                     if (IsEffectEnabled && NetworkAvatar != null && !NetworkAvatar.IsDead)
                     {
-                        Attack(count - 1, aimedDelta, sharedTarget, percent);
+                        Attack(count - 1, aimedDelta, new List<CombatBehaviour>(), percent);
                     }
                 });
             }
