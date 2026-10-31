@@ -60,6 +60,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             WeaponController.OnEndAttackAnimation -= EndAttackAnimation;
             WeaponController.OnSwingCreated_Special -= OnSpecialAttackCreated;
 
+            ClearStat();
             if (currentChargingFx)
             {
                 currentChargingFx.Despawn();

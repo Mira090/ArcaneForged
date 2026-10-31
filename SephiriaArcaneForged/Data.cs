@@ -77,7 +77,7 @@ namespace SephiriaArcaneForged
         /// ArcaneWeapon_SwordShieldShieldThrowing_Effect
         /// <tag=SpecialAttackDamage>が{VAL0}減少しますが、<tag=WeaponAction_SpecialAttack>をした時、<tag=WeaponAction_ShieldThrow>が発動します。
         /// </summary>
-        public static ModArcaneWeapon SwordShieldShieldThrowing { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_ShieldThrowing>("SwordShieldShieldThrowing", 1023, "SPECIAL_ATTACK_DAMAGE/-20");
+        public static ModArcaneWeapon SwordShieldShieldThrowing { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_ShieldThrowing>("SwordShieldShieldThrowing", 1023, "SPECIAL_ATTACK_DAMAGE/-20").SetDamageId();
         /// <summary>
         /// ニンジンカリバー
         /// ArcaneWeapon_SwordShieldSpeed_Affix

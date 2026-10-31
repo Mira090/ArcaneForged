@@ -15,13 +15,13 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             base.OnEnabledEffect();
             if(weaponSimple != null)
             {
-                WeaponController.currentWeapon.NetworkattackSpeedAmplify -= attackSpeedAmplify;
+                weaponSimple.NetworkattackSpeedAmplify -= attackSpeedAmplify;
                 weaponSimple = null;
             }
             weaponSimple = WeaponController.currentWeapon;
             if(weaponSimple != null)
             {
-                WeaponController.currentWeapon.NetworkattackSpeedAmplify += attackSpeedAmplify;
+                weaponSimple.NetworkattackSpeedAmplify += attackSpeedAmplify;
             }
         }
         public override void OnDisabledEffect()
@@ -29,7 +29,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             base.OnDisabledEffect();
             if (weaponSimple != null)
             {
-                WeaponController.currentWeapon.NetworkattackSpeedAmplify -= attackSpeedAmplify;
+                weaponSimple.NetworkattackSpeedAmplify -= attackSpeedAmplify;
                 weaponSimple = null;
             }
         }
