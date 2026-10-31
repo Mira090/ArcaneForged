@@ -135,6 +135,57 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData _shieldThrowingFireData;
+        public static NewWeaponFireData DualSlashFireData
+        {
+            get
+            {
+                if (_dualSlashFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1125);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_GreatSword>(out var sword))
+                        return null;
+                    _dualSlashFireData = sword.basicComboAttacks.LastOrDefault();
+                }
+                return _dualSlashFireData;
+            }
+        }
+        private static NewWeaponFireData _dualSlashFireData;
+        public static NewWeaponFireData DualSlashBasicFireData
+        {
+            get
+            {
+                if (_dualSlashBasicFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1125);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_GreatSword>(out var sword))
+                        return null;
+                    _dualSlashBasicFireData = sword.basicComboAttacks[3];
+                }
+                return _dualSlashBasicFireData;
+            }
+        }
+        private static NewWeaponFireData _dualSlashBasicFireData;
+        public static NewWeaponFireData DualSlashSecondFireData
+        {
+            get
+            {
+                if (_dualSlashSecondFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1125);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_GreatSword>(out var sword))
+                        return null;
+                    _dualSlashSecondFireData = sword.basicComboAttacks[4];
+                }
+                return _dualSlashSecondFireData;
+            }
+        }
+        private static NewWeaponFireData _dualSlashSecondFireData;
         public static NewWeaponFireData CrystalExplosionFireData
         {
             get
@@ -267,7 +318,7 @@ namespace SephiriaArcaneForged.Utilities
         }
         private static GameObject _magicBladePrefab;
         /// <summary>
-        /// アダマフの誓い
+        /// 剣斬刀：破舞
         /// </summary>
         public static GameObject NanmuStartFxPrefab
         {
@@ -287,7 +338,7 @@ namespace SephiriaArcaneForged.Utilities
         }
         private static GameObject _nanmuStartFxPrefab;
         /// <summary>
-        /// アダマフの誓い
+        /// 剣斬刀：破舞
         /// </summary>
         public static NewWeaponFireData[] NanmuExtraSwingFireDatas
         {
@@ -306,5 +357,25 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData[] _nanmuExtraSwingFireDatas;
+        /// <summary>
+        /// 散りゆく未練
+        /// </summary>
+        public static UI_KatanaDashStack StackUIPrefab
+        {
+            get
+            {
+                if (_stackUIPrefab == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1125);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponAddonGreatsword_DualSlash>(out var addon))
+                        return null;
+                    _stackUIPrefab = addon.stackUIPrefab;
+                }
+                return _stackUIPrefab;
+            }
+        }
+        private static UI_KatanaDashStack _stackUIPrefab;
     }
 }

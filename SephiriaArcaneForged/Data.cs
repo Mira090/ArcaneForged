@@ -227,6 +227,23 @@ namespace SephiriaArcaneForged
         public static ModArcaneWeapon GreatSwordSteal { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_OutsideBonus>("GreatSwordSteal", 1111)
             .SetCondition(ModArcaneWeapon.EConditionType.UseWhirlwind).SetEffect("WeaponAddon_WhirlwindOutside_Effect");
         /// <summary>
+        /// 短い自責
+        /// ArcaneWeapon_GreatSwordBasic_Affix
+        /// 自責の
+        /// ArcaneWeapon_GreatSwordBasic_Effect
+        /// <tag=WeaponAction_BasicAttack>の最後の連撃が追加で2回発動します。
+        /// </summary>
+        public static ModArcaneWeapon GreatSwordBasic { get; } = ModArcaneWeapon.Create<ArcaneWeapon_TripleCombo>("GreatSwordBasic", 0016).SetDamageId();
+        /// <summary>
+        /// 散りゆく未練
+        /// ArcaneWeapon_GreatSwordDualSlash_Affix
+        /// 散りゆく
+        /// ArcaneWeapon_GreatSwordDualSlash_Effect
+        /// 攻撃ごとに<tag=Buff_Greatsword_ChainSlash>を1スタック獲得します。\r\n<tag=WeaponAction_BasicAttack>の最後の連撃の前に<tag=WeaponAction_SpecialAttack>を使用すると、<tag=WeaponAction_Greatsword_DualSlash>を使用します。
+        /// </summary>
+        public static ModArcaneWeapon GreatSwordDualSlash { get; } = ModArcaneWeapon.Create<ArcaneWeapon_DualSlash>("GreatSwordDualSlash", 1125)
+            .SetCondition(ModArcaneWeapon.EConditionType.HasMelee).SetDamageId();
+        /// <summary>
         /// 紅蛇の粉砕
         /// ArcaneWeapon_GreatSwordEmber_Affix
         /// 紅蛇の

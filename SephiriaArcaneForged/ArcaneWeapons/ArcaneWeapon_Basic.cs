@@ -355,10 +355,11 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             attack.CreateAttack(EDamageFromType.DirectAttack, damage, DamageId, true, NetworkAvatar, vector, vector + aimedDelta, y, OnCreateAttack, sharedTarget, AttackDashScale, null, false, rangeBonus, 1f, MpConsumed, elemental);
             attack.damageElementalType = temp;
             attack.damageMultiplier = tempMultiplier;
+            attack.forceFinalCombo = GetForceFinalCombo();
 
             if (count - 1 > 0)
             {
-                this.Delay(0.05f, () =>
+                this.Delay(GetTriggerDelay(), () =>
                 {
                     if (IsEffectEnabled && NetworkAvatar != null && !NetworkAvatar.IsDead)
                     {
@@ -366,6 +367,14 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                     }
                 });
             }
+        }
+        protected virtual float GetTriggerDelay()
+        {
+            return 0.05f;
+        }
+        protected virtual bool GetForceFinalCombo()
+        {
+            return false;
         }
         protected virtual float ModifyDamage(float damage)
         {

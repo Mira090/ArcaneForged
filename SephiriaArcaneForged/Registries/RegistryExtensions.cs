@@ -57,6 +57,10 @@ namespace SephiriaArcaneForged.Registries
             {
                 item.Condition = current => !current.mainWeaponPrefab.TryGetComponent<WeaponSimple_Crossbow>(out var _) && !current.mainWeaponPrefab.TryGetComponent<WeaponSimple_QuartterStaff>(out var _);
             }
+            else if (type == EConditionType.HasMelee)
+            {
+                item.Condition = current => !current.mainWeaponPrefab.TryGetComponent<WeaponSimple_Crossbow>(out var _);
+            }
             return item;
         }
         public static T SetHasNoStackText<T>(this T item, bool hasStackText = false) where T : ModEffectHUD
