@@ -52,6 +52,19 @@ namespace SephiriaArcaneForged.Utilities
         }
         private static GameObject[] _solisMissioFxPrefabs;
         /// <summary>
+        /// 迫り来る恐怖
+        /// </summary>
+        public static GameObject ChargeFxPrefab
+        {
+            get
+            {
+                if (_chargeFxPrefab == null)
+                    _chargeFxPrefab = WeaponDatabase.FindWeaponById(9).mainWeaponPrefab.GetComponent<WeaponSimple_SwordAndShield>().chargeFxPrefab;
+                return _chargeFxPrefab;
+            }
+        }
+        private static GameObject _chargeFxPrefab;
+        /// <summary>
         /// 敷居跨ぎのバフ効果
         /// </summary>
         public static CharacterBuff BasicAttackFinalBuffPrefab
@@ -105,6 +118,23 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData _lightningSpearFireData;
+        public static NewWeaponFireData ShieldThrowingFireData
+        {
+            get
+            {
+                if (_shieldThrowingFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1023);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_SwordAndShield>(out var sword))
+                        return null;
+                    _shieldThrowingFireData = sword.specialAttacks.LastOrDefault();
+                }
+                return _shieldThrowingFireData;
+            }
+        }
+        private static NewWeaponFireData _shieldThrowingFireData;
         public static NewWeaponFireData CrystalExplosionFireData
         {
             get

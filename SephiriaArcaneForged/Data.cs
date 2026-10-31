@@ -63,6 +63,39 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon SwordShieldBasic { get; } = ModArcaneWeapon.CreateStats("SwordShieldBasic", 0007, "BASIC_ATTACK_DAMAGE/33", "SPECIAL_ATTACK_COST_REDUCTION/-50");
         /// <summary>
+        /// 迫り来る恐怖
+        /// ArcaneWeapon_SwordShieldSpecial_Affix
+        /// 迫り来る
+        /// ArcaneWeapon_SwordShieldSpecial_Effect
+        /// {COOLDOWN}秒ごとに「<tag=Buff_RisingDread>」を1スタック獲得します（最大<tag=CONST:chargedSweepMaxStack>スタック）\r\n<tag=WeaponAction_Sweep>だけでなく、すべての<tag=WeaponAction_SpecialAttack>に効果が適用され、<tag=AttackSpeed>に比例してスタック獲得速度が増加します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldSpecial { get; } = ModArcaneWeapon.Create<ArcaneWeapon_ChargedSpecialAttack>("SwordShieldSpecial", 0009);
+        /// <summary>
+        /// 回帰する守護
+        /// ArcaneWeapon_SwordShieldShieldThrowing_Affix
+        /// 回帰する
+        /// ArcaneWeapon_SwordShieldShieldThrowing_Effect
+        /// <tag=SpecialAttackDamage>が{VAL0}減少しますが、<tag=WeaponAction_SpecialAttack>をした時、<tag=WeaponAction_ShieldThrow>が発動します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldShieldThrowing { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_ShieldThrowing>("SwordShieldShieldThrowing", 1023, "SPECIAL_ATTACK_DAMAGE/-20");
+        /// <summary>
+        /// ニンジンカリバー
+        /// ArcaneWeapon_SwordShieldSpeed_Affix
+        /// ニンジン
+        /// ArcaneWeapon_SwordShieldSpeed_Effect
+        /// 追加<tag=AttackSpeed>の効果が{PERCENT}向上します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldSpeed { get; } = ModArcaneWeapon.Create<ArcaneWeapon_EnhancedAttackSpeed>("SwordShieldSpeed", 1001);
+        /// <summary>
+        /// エクスカリオン
+        /// ArcaneWeapon_SwordShieldMagic_Affix
+        /// タマネギ
+        /// ArcaneWeapon_SwordShieldMagic_Effect
+        /// すべての属性ダメージが2増加し、<tag=MagicDamageBonus>が15%上昇します。
+        /// </summary>
+        public static ModArcaneWeapon SwordShieldMagic { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_StatusInstance>("SwordShieldMagic", 1019,
+            "PHYSICAL_DAMAGE/2", "FIRE_DAMAGE/2", "ICE_DAMAGE/2", "LIGHTNING_DAMAGE/2", "MAGIC_DAMAGE_BONUS/15").SetEffect("WeaponAddon_GreenOnionSword_Effect");
+        /// <summary>
         /// 閃光のレイピア
         /// ArcaneWeapon_SwordShieldRapier_Affix
         /// 閃光の

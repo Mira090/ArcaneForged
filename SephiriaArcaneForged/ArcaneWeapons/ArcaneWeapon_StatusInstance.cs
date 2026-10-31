@@ -54,6 +54,8 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         {
             var list = new List<Loc.KeywordValue>();
             int index = 0;
+            if (stats == null)
+                return list.ToArray();
             foreach(var stat in stats)
             {
                 var instance = StatusDatabase.CreateStatusEntity(stat);
