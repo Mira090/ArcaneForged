@@ -239,7 +239,7 @@ namespace SephiriaArcaneForged
         /// ArcaneWeapon_GreatSwordDualSlash_Affix
         /// 散りゆく
         /// ArcaneWeapon_GreatSwordDualSlash_Effect
-        /// 攻撃ごとに<tag=Buff_Greatsword_ChainSlash>を1スタック獲得します。\r\n<tag=WeaponAction_BasicAttack>の間に<tag=WeaponAction_SpecialAttack>を使用すると、次の最後の連撃の代わりに<tag=WeaponAction_Greatsword_DualSlash>を使用します。
+        /// 攻撃ごとに<tag=Buff_Greatsword_ChainSlash>を1スタック獲得します。\r\n<tag=WeaponAction_BasicAttack>の間に<tag=WeaponAction_SpecialAttack>を使用すると、次の最後の連撃が<tag=WeaponAction_Greatsword_DualSlash>に変化します。
         /// </summary>
         public static ModArcaneWeapon GreatSwordDualSlash { get; } = ModArcaneWeapon.Create<ArcaneWeapon_DualSlash>("GreatSwordDualSlash", 1125)
             .SetCondition(ModArcaneWeapon.EConditionType.HasMelee).SetDamageId();
