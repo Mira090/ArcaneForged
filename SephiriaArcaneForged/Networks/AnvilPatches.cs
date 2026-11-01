@@ -160,8 +160,8 @@ namespace SephiriaArcaneForged.Networks
                 Core.Logger("Reroll local weapon list seed: " + seed.ToString());
                 Random random = new Random(seed);
                 var alreadyList = __instance.localWeaponList.Select(x => x.enhanced.id).ToList();
-                Core.Logger("Reroll: " + string.Join(", ", alreadyList.Select(x => WeaponDatabase.FindWeaponById(x).aName.ToString())));
-                __instance.localWeaponList.Clear();
+                //Core.Logger("Reroll: " + string.Join(", ", alreadyList.Select(x => WeaponDatabase.FindWeaponById(x).aName.ToString())));
+                //__instance.localWeaponList.Clear();
                 int count = EnhanceSlotCount;
                 count += player.GetCustomStatUnsafe("EXTRAWEAPONCHOICES");
                 for (int i = 0; i < count; i++)

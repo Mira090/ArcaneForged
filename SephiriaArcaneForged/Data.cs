@@ -239,7 +239,7 @@ namespace SephiriaArcaneForged
         /// ArcaneWeapon_GreatSwordDualSlash_Affix
         /// 散りゆく
         /// ArcaneWeapon_GreatSwordDualSlash_Effect
-        /// 攻撃ごとに<tag=Buff_Greatsword_ChainSlash>を1スタック獲得します。\r\n<tag=WeaponAction_BasicAttack>の最後の連撃の前に<tag=WeaponAction_SpecialAttack>を使用すると、<tag=WeaponAction_Greatsword_DualSlash>を使用します。
+        /// 攻撃ごとに<tag=Buff_Greatsword_ChainSlash>を1スタック獲得します。\r\n<tag=WeaponAction_BasicAttack>の間に<tag=WeaponAction_SpecialAttack>を使用すると、次の最後の連撃の代わりに<tag=WeaponAction_Greatsword_DualSlash>を使用します。
         /// </summary>
         public static ModArcaneWeapon GreatSwordDualSlash { get; } = ModArcaneWeapon.Create<ArcaneWeapon_DualSlash>("GreatSwordDualSlash", 1125)
             .SetCondition(ModArcaneWeapon.EConditionType.HasMelee).SetDamageId();
@@ -610,6 +610,13 @@ namespace SephiriaArcaneForged
         /// <tag=WeaponAction_BasicAttack>が命中すると増加します。
         /// </summary>
         public static ModEffectHUD KatanaGaugeHUD { get; } = ModEffectHUD.CreateStackEffectHUD("KatanaGauge").SetHasNoStackText();
+        /// <summary>
+        /// EffectHUD_DualSlash_Name
+        /// 連続斬り
+        /// EffectHUD_DualSlash_FlavorText
+        /// 次の<tag=WeaponAction_BasicAttack>の最後の連撃が<tag=WeaponAction_Greatsword_DualSlash>に変化します。
+        /// </summary>
+        public static ModEffectHUD DualSlashHUD { get; } = ModEffectHUD.CreateBuffEffectHUD("DualSlash").SetHasNoStackText();
 
 
         public static void Init()

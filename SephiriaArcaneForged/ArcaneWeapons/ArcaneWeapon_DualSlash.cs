@@ -13,7 +13,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
     public class ArcaneWeapon_DualSlash : ArcaneWeapon_Basic
     {
         public static readonly string Stat = "BASICATTACKDUALSLASH";
-        public static readonly string ForceBasicStat = "FORCEFIRSTBASICATTACK";
+        public static readonly string ForceBasicStat = "BASICATTACKDUALSLASH";
         public static readonly string SpaceBasicStat = "BASICATTACKSPACESLASH";
 
         public string stackDamageBonusConstKey = "GreatSwordTwinStackDamageBonus";
@@ -140,6 +140,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             {
                 NetworkAvatar.AddCustomStatUnsafe(ForceBasicStat, -force);
             }
+            NetworkAvatar.DestroyEffectHUD("DualSlash");
             var space = NetworkAvatar.GetCustomStatUnsafe(SpaceBasicStat);
             if (space > 0)
             {
@@ -163,12 +164,10 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                 NetworkAvatar.AddCustomStatUnsafe(SpaceBasicStat, -space);
             }
 
-            if (force > 0)
-            {
-                NetworkAvatar.AddCustomStatUnsafe(ForceBasicStat, -force);
-            }
             if (force > 0 && idx == WeaponController.currentWeapon.finalComboIdx)
             {
+                NetworkAvatar.AddCustomStatUnsafe(ForceBasicStat, -force);
+                NetworkAvatar.DestroyEffectHUD("DualSlash");
                 this.Delay(0.1f, () =>
                 {
                     if (!IsEffectEnabled || NetworkAvatar == null || WeaponController == null || NetworkAvatar.IsDead)
@@ -285,11 +284,12 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                 if (!__instance.unitAvatar)
                     return;
 
+                /*
                 var force = __instance.unitAvatar.GetCustomStatUnsafe(ForceBasicStat);
                 if (force > 0)
                 {
                     __instance.unitAvatar.AddCustomStatUnsafe(ForceBasicStat, -force);
-                }
+                }*/
                 var space = __instance.unitAvatar.GetCustomStatUnsafe(SpaceBasicStat);
                 if (space > 0)
                 {
@@ -525,6 +525,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             //__instance.Networkowner.SetAnimationTrigger(AnimHashContainer.Instance.AttackHash);
 
             __instance.Networkowner.unitAvatar.AddCustomStatUnsafe(ForceBasicStat, 1);
+            __instance.Networkowner.unitAvatar.CreateEffectHUD(Data.DualSlashHUD.Id, "DualSlash");
 
         }
     }

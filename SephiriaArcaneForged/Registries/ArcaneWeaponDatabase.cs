@@ -95,7 +95,11 @@ namespace SephiriaArcaneForged.Registries
             var weapons = GetAll(current).Where(x => alreadyList == null || alreadyList.Count == 0 || !alreadyList.Contains(x.weapon.id)).Where(x => current == null || x.id != current.id).ToList();
             Core.Logger("weapons: " + weapons.Count);
             if (weapons.Count == 0)
-                return new EnhancementMetadata();
+            {
+                weapons = GetAll(current).Where(x => current == null || x.id != current.id).ToList();
+                if (weapons.Count == 0)
+                    return new EnhancementMetadata();
+            }
             var index = random.Next(0, weapons.Count);
             Core.Logger("selected: " + weapons[index].weapon.aName.ToString());
             return new EnhancementMetadata()
