@@ -98,7 +98,7 @@ namespace SephiriaArcaneForged.Networks
         [HarmonyPatch(typeof(Anvil))]
         public static class AnvilPatch
         {
-            public static readonly int EnhanceSlotCount = 8;
+            public static readonly int EnhanceSlotCount = 10;
             [HarmonyPatch("HandleInteraction")]
             [HarmonyPrefix]
             static void HandleInteractionPatch(Anvil __instance, GameObject actor)
@@ -137,6 +137,8 @@ namespace SephiriaArcaneForged.Networks
                 }
             }
 
+            public static Dictionary<Anvil, List<int>> AlreadyLists = new Dictionary<Anvil, List<int>>();
+
             [HarmonyPatch(nameof(Anvil.Reroll))]
             [HarmonyPrefix]
             static bool RerollPatch(Anvil __instance, PlayerAvatar player)
@@ -155,21 +157,28 @@ namespace SephiriaArcaneForged.Networks
                     return true;
                 if (!controller.CanEquipArcaneWeapon())
                     return true;
+
+                if (!AlreadyLists.ContainsKey(__instance))
+                {
+                    AlreadyLists[__instance] = new List<int>();
+                }
+                AlreadyLists[__instance].AddRange(__instance.localWeaponList.Select(x => x.enhanced.id));
+                //Core.Logger("Reroll: " + string.Join(", ", alreadyList.Select(x => WeaponDatabase.FindWeaponById(x).aName.ToString())));
+                __instance.localWeaponList.Clear();
+
                 __instance.localRerollSeedOffset += 1000;
                 int seed = __instance.RandomID + player.RandomID + __instance.localRerollSeedOffset;
                 Core.Logger("Reroll local weapon list seed: " + seed.ToString());
                 Random random = new Random(seed);
-                var alreadyList = __instance.localWeaponList.Select(x => x.enhanced.id).ToList();
-                //Core.Logger("Reroll: " + string.Join(", ", alreadyList.Select(x => WeaponDatabase.FindWeaponById(x).aName.ToString())));
-                //__instance.localWeaponList.Clear();
+
                 int count = EnhanceSlotCount;
                 count += player.GetCustomStatUnsafe("EXTRAWEAPONCHOICES");
                 for (int i = 0; i < count; i++)
                 {
-                    var randomEnhancement = ArcaneWeaponDatabase.GetRandomEnhancement(random, weaponEntity, alreadyList);
+                    var randomEnhancement = ArcaneWeaponDatabase.GetRandomEnhancement(random, weaponEntity, AlreadyLists[__instance]);
                     if (randomEnhancement.enhanced == null)
                         continue;
-                    alreadyList.Add(randomEnhancement.enhanced.id);
+                    AlreadyLists[__instance].Add(randomEnhancement.enhanced.id);
                     __instance.localWeaponList.Add(randomEnhancement);
                 }
                 if (UIManager.Instance)
@@ -177,6 +186,13 @@ namespace SephiriaArcaneForged.Networks
                     UIManager.Instance.GetElement<UI_WeaponEnhancementPanel>().UpdateList();
                 }
                 return false;
+            }
+            [HarmonyPatch("OnDestroy")]
+            [HarmonyPostfix]
+            static void OnDestroyPatch(Anvil __instance)
+            {
+                if(AlreadyLists.ContainsKey(__instance))
+                    AlreadyLists.Remove(__instance);
             }
         }
         [HarmonyPatch(typeof(UI_WeaponEnhancementPanel))]

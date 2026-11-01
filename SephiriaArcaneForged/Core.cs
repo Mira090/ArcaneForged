@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Mirror;
 using SephiriaArcaneForged.ArcaneWeapons;
+using SephiriaArcaneForged.Networks;
 using SephiriaArcaneForged.Registries;
 using SephiriaArcaneForged.Utilities;
 using System;
@@ -65,6 +66,8 @@ namespace SephiriaArcaneForged
         protected override void OnModUnloaded()
         {
             IsInitialized = false;
+
+            AnvilPatches.AnvilPatch.AlreadyLists.Clear();
 
             HorayModAPI.OnLoadWeaponDatabase -= OnLoadWeaponDatabase;
             HorayModAPI.OnLocalizationReady -= AssetLoader.LoadLocalization;
