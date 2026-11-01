@@ -352,7 +352,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                 attack.damageElementalType = elemental.Value;
             attack.damageMultiplier = DamageMultiplier ?? tempMultiplier;
 
-            attack.CreateAttack(EDamageFromType.DirectAttack, damage, DamageId, true, NetworkAvatar, vector, vector + aimedDelta, y, OnCreateAttack, sharedTarget, AttackDashScale, null, false, rangeBonus, 1f, MpConsumed, elemental);
+            attack.CreateAttack(EDamageFromType.DirectAttack, damage, DamageId, true, NetworkAvatar, vector, vector + aimedDelta, y, OnCreateAttack, sharedTarget, AttackDashScale, OnAttack, false, rangeBonus, 1f, MpConsumed, elemental);
             attack.damageElementalType = temp;
             attack.damageMultiplier = tempMultiplier;
             attack.forceFinalCombo = GetForceFinalCombo();
@@ -367,6 +367,10 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                     }
                 });
             }
+        }
+        protected virtual void OnAttack(CombatBehaviour combat, DamageInstance damage, ProjectileBase projectile)
+        {
+
         }
         protected virtual float GetTriggerDelay()
         {

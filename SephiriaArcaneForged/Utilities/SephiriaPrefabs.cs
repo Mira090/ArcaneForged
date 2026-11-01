@@ -101,6 +101,23 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData _dashAttackFireData_BladeZone;
+        public static NewWeaponFireData FlameDaggerFireData
+        {
+            get
+            {
+                if (_flameDaggerFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1201);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_Dagger>(out var sword))
+                        return null;
+                    _flameDaggerFireData = sword.specialAttacks.LastOrDefault();
+                }
+                return _flameDaggerFireData;
+            }
+        }
+        private static NewWeaponFireData _flameDaggerFireData;
         public static NewWeaponFireData LightningSpearFireData
         {
             get

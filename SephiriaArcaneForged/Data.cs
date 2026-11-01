@@ -333,6 +333,40 @@ namespace SephiriaArcaneForged
         /// </summary>
         public static ModArcaneWeapon DaggerFinal { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_BasicAttackFinal>("DaggerFinal", 27);
         /// <summary>
+        /// 這い寄る絶望
+        /// ArcaneWeapon_DaggerSpecial_Affix
+        /// 這い寄る
+        /// ArcaneWeapon_DaggerSpecial_Effect
+        /// <tag=WeaponAction_Parry>に成功すると、<tag=WeaponAction_Trance>が2回分チャージされます。
+        /// </summary>
+        public static ModArcaneWeapon DaggerSpecial { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_DoubleFury>("DaggerSpecial", 28)
+            .SetCondition(ModArcaneWeapon.EConditionType.HasPary);
+        /// <summary>
+        /// 難しい実験
+        /// ArcaneWeapon_DaggerFury_Affix
+        /// 難しい
+        /// ArcaneWeapon_DaggerFury_Effect
+        /// <tag=WeaponAction_Parry>を使用できなくなりますが、<tag=WeaponAction_DirectAttack>時、<tag=CONST:critFuryPercent>%の確率で<tag=WeaponAction_Trance>を獲得します。（<tag=WeaponAction_Trance>は<tag=CONST:critFuryStack>回までチャージ可能）
+        /// </summary>
+        public static ModArcaneWeapon DaggerFury { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_CritFury>("DaggerFury", 29).SetEffect("WeaponAddon_CritFury_Effect")
+            .SetCondition(ModArcaneWeapon.EConditionType.HasFury);
+        /// <summary>
+        /// 焼け刃
+        /// ArcaneWeapon_DaggerEmber_Affix
+        /// 焼けた
+        /// ArcaneWeapon_DaggerEmber_Effect
+        /// <tag=WeaponAction_SpecialAttack>した時、<tag=WeaponAction_ThrowDagger>が発動します。（クールダウン{COOLDOWN}秒）
+        /// </summary>
+        public static ModArcaneWeapon DaggerEmber { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_FlameDagger>("DaggerEmber", 1201).SetDamageId();
+        /// <summary>
+        /// ソリス・イムベル
+        /// ArcaneWeapon_DaggerFlameSword_Affix
+        /// 陽光の
+        /// ArcaneWeapon_DaggerFlameSword_Effect
+        /// <tag=WeaponAction_SpecialAttack>命中時、<tag=FlameSword>をすべて発動します。（クールダウン{COOLDOWN}秒）
+        /// </summary>
+        public static ModArcaneWeapon DaggerFlameSword { get; } = ModArcaneWeapon.CreateStats<ArcaneWeapon_FlameSwordOnSpecialAttack>("DaggerFlameSword", 1214);
+        /// <summary>
         /// 垂れ込める雷雲
         /// ArcaneWeapon_DaggerDarkCloud_Affix
         /// 垂れ込める
@@ -364,6 +398,15 @@ namespace SephiriaArcaneForged
         /// <tag=WeaponAction_DirectAttack>時に、{BUFF}バフを獲得します。
         /// </summary>
         public static ModArcaneWeapon DaggerCompanion { get; } = ModArcaneWeapon.CreateBuff("DaggerCompanion", 1210, "Buff_ThrowComp", () => SephiriaPrefabs.ThrowCompBuffPrefab).SetEffect("WeaponAddon_AttackBuff_Effect");
+        /// <summary>
+        /// 無限の沈浸
+        /// ArcaneWeapon_DaggerShadow_Affix
+        /// 無限の
+        /// ArcaneWeapon_DaggerShadow_Effect
+        /// <tag=WeaponAction_Parry>を使用できなくなりますが、2.8秒ごとに<tag=WeaponAction_Trance>を獲得します。（<tag=Evasion>ごとにチャージ速度が1%増加、最大33%）
+        /// </summary>
+        public static ModArcaneWeapon DaggerShadow { get; } = ModArcaneWeapon.CreateFlag("DaggerShadow", 1209, "EVASIONFURY", 1).SetEffect("WeaponAddon_EvasionFury_Effect")
+            .SetCondition(ModArcaneWeapon.EConditionType.HasFury);
         /// <summary>
         /// 冷凍ワカサギ
         /// ArcaneWeapon_DaggerGlacier_Affix
