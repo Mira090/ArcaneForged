@@ -12,7 +12,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
 {
     public class ArcaneWeapon_DualSlash : ArcaneWeapon_Basic
     {
-        public static readonly string Stat = "BASICATTACKDUALSLASH";
+        public static readonly string Stat = "ARCANEWEAPONDUALSLASH";
         public static readonly string ForceBasicStat = "BASICATTACKDUALSLASH";
         public static readonly string SpaceBasicStat = "BASICATTACKSPACESLASH";
 
@@ -284,12 +284,13 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                 if (!__instance.unitAvatar)
                     return;
 
-                /*
+                
                 var force = __instance.unitAvatar.GetCustomStatUnsafe(ForceBasicStat);
                 if (force > 0)
                 {
                     __instance.unitAvatar.AddCustomStatUnsafe(ForceBasicStat, -force);
-                }*/
+                    __instance.unitAvatar.DestroyEffectHUD("DualSlash");
+                }
                 var space = __instance.unitAvatar.GetCustomStatUnsafe(SpaceBasicStat);
                 if (space > 0)
                 {

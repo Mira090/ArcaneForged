@@ -12,12 +12,13 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         {
             get
             {
-                if (WeaponController == null)
+                if (NetworkAvatar == null)
                     return null;
-                if (WeaponController.currentWeapon == null)
+                var weapon = NetworkAvatar.gameObject.GetComponent<WeaponControllerSimple>();
+                if (weapon == null || weapon.currentWeapon == null)
                     return null;
-                var idx = WeaponController.currentWeapon.finalComboIdx;
-                return WeaponController.currentWeapon.GetBasicAttack(idx, WeaponController.currentWeapon.GetBasicAttackParameter(idx));
+                var idx = weapon.currentWeapon.finalComboIdx;
+                return weapon.currentWeapon.GetBasicAttack(idx, weapon.currentWeapon.GetBasicAttackParameter(idx));
             }
         }
         public override string DamageId => "ArcaneWeapon_GreatSwordBasic";
