@@ -2,6 +2,7 @@
 using Mirror;
 using Myevan;
 using Newtonsoft.Json.Linq;
+using SephiriaArcaneForged.ArcaneWeapons;
 using SephiriaArcaneForged.Registries;
 using SephiriaArcaneForged.Utilities;
 using System;
@@ -410,60 +411,17 @@ namespace SephiriaArcaneForged.Networks
         [HarmonyPatch(typeof(UI_WeaponIcon))]
         public static class UI_WeaponIconPatch
         {
-            public static Sprite NormalFrameSprite;
-            public static Sprite ForgedFrameSprite;
-            public static Sprite NormalSelectedFrameSprite;
-            public static Sprite ForgedSelectedFrameSprite;
             [HarmonyPatch(nameof(UI_WeaponIcon.SetWeapon), new Type[] { typeof(WeaponSimple) })]
             [HarmonyPostfix]
             static void SetWeaponPatch(UI_WeaponIcon __instance, WeaponSimple weapon)
             {
+                Core.Logger("SetWeaponPatch");
+                Core.Logger("weapon: " + weapon?.entityId.ToString());
+                Core.Logger("controller: " + weapon?.Networkowner?.name);
                 if (weapon == null || weapon.Networkowner == null)
                     return;
-                var arcane = weapon.Networkowner.GetCurrentArcaneWeapon();
-
-                if (__instance.gameObject.TryGetComponent<UI_HorayButton>(out var button))
-                {
-                    var state = button.spriteState;
-
-                    if (NormalFrameSprite == null)
-                        NormalFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal");
-                    if (NormalSelectedFrameSprite == null)
-                        NormalSelectedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal_selected");
-                    if (ForgedFrameSprite == null)
-                        ForgedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged");
-                    if (ForgedSelectedFrameSprite == null)
-                        ForgedSelectedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged_selected");
-
-                    state.disabledSprite = arcane == null ? NormalFrameSprite : ForgedFrameSprite;
-                    state.highlightedSprite = arcane == null ? NormalFrameSprite : ForgedFrameSprite;
-                    state.pressedSprite = arcane == null ? NormalFrameSprite : ForgedFrameSprite;
-                    state.selectedSprite = arcane == null ? NormalSelectedFrameSprite : ForgedSelectedFrameSprite;
-
-                    button.spriteState = state;
-                }
-                if (__instance.transform.childCount < 1)
-                    return;
-
-                if (__instance.transform.GetChild(0).gameObject.TryGetComponent<Image>(out var iconImage))
-                {
-                    if (NormalFrameSprite == null)
-                        NormalFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal");
-                    if (NormalFrameSprite != null)
-                        iconImage.sprite = NormalFrameSprite;
-
-                    if (arcane == null)
-                        return;
-
-                    if (ForgedFrameSprite == null)
-                        ForgedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged");
-                    if (ForgedFrameSprite != null)
-                        iconImage.sprite = ForgedFrameSprite;
-                }
+                __instance.SetArcaneWeapon(weapon, weapon.Networkowner.GetCurrentArcaneWeapon());
             }
-
-            public static Sprite NotForgableSprite;
-            public static Sprite ForgableSprite;
 
             [HarmonyPatch(nameof(UI_WeaponIcon.SetWeapon), new Type[] { typeof(WeaponEntity) })]
             [HarmonyPostfix]
@@ -492,6 +450,74 @@ namespace SephiriaArcaneForged.Networks
                     if (ForgableSprite != null)
                         iconImage.sprite = ForgableSprite;
                 }
+            }
+        }
+        public static Sprite NormalFrameSprite;
+        public static Sprite ForgedFrameSprite;
+        public static Sprite NormalSelectedFrameSprite;
+        public static Sprite ForgedSelectedFrameSprite;
+
+        public static Sprite NotForgableSprite;
+        public static Sprite ForgableSprite;
+        public static void SetArcaneWeapon(this UI_WeaponIcon __instance, WeaponSimple weapon, ArcaneWeapon_Basic arcane)
+        {
+            Core.Logger("arcane: " + arcane?.name);
+
+            if (__instance.gameObject.TryGetComponent<UI_HorayButton>(out var button))
+            {
+                var state = button.spriteState;
+
+                if (NormalFrameSprite == null)
+                    NormalFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal");
+                if (NormalSelectedFrameSprite == null)
+                    NormalSelectedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal_selected");
+                if (ForgedFrameSprite == null)
+                    ForgedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged");
+                if (ForgedSelectedFrameSprite == null)
+                    ForgedSelectedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged_selected");
+
+                state.disabledSprite = arcane == null ? NormalFrameSprite : ForgedFrameSprite;
+                state.highlightedSprite = arcane == null ? NormalFrameSprite : ForgedFrameSprite;
+                state.pressedSprite = arcane == null ? NormalFrameSprite : ForgedFrameSprite;
+                state.selectedSprite = arcane == null ? NormalSelectedFrameSprite : ForgedSelectedFrameSprite;
+
+                button.spriteState = state;
+            }
+            if (__instance.transform.childCount < 1)
+                return;
+
+            if (__instance.transform.GetChild(0).gameObject.TryGetComponent<Image>(out var iconImage))
+            {
+                if (NormalFrameSprite == null)
+                    NormalFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "normal");
+                if (NormalFrameSprite != null)
+                    iconImage.sprite = NormalFrameSprite;
+
+                if (arcane == null)
+                    return;
+
+                if (ForgedFrameSprite == null)
+                    ForgedFrameSprite = AssetLoader.LoadSprite(AssetLoader.UIPath + "forged");
+                if (ForgedFrameSprite != null)
+                    iconImage.sprite = ForgedFrameSprite;
+            }
+        }
+        [HarmonyPatch(typeof(UI_StatsPanel))]
+        public static class StatsPanelPatch
+        {
+            [HarmonyPatch(nameof(UI_StatsPanel.Connect))]
+            static void Postfix(UI_StatsPanel __instance, GameObject playerObject)
+            {
+                if (playerObject == null)
+                    return;
+                if (!playerObject.TryGetComponent<WeaponControllerSimple>(out var _))
+                    return;
+                ArcaneWeaponExtensions.StatsPanels.Add(__instance);
+            }
+            [HarmonyPatch(nameof(UI_StatsPanel.Disconnect))]
+            static void Postfix(UI_StatsPanel __instance)
+            {
+                ArcaneWeaponExtensions.StatsPanels.Remove(__instance);
             }
         }
     }

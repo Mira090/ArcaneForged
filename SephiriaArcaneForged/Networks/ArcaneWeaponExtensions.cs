@@ -36,6 +36,7 @@ namespace SephiriaArcaneForged.Networks
         }
 
         public static readonly Dictionary<WeaponControllerSimple, SyncList<ArcaneWeapon_Basic>> CurrentArcaneWeapons = new Dictionary<WeaponControllerSimple, SyncList<ArcaneWeapon_Basic>>();
+        public static readonly List<UI_StatsPanel> StatsPanels = new List<UI_StatsPanel>();
         public static ArcaneWeapon_Basic GetCurrentArcaneWeapon(this WeaponControllerSimple controller)
         {
             if (!CurrentArcaneWeapons.ContainsKey(controller) || CurrentArcaneWeapons[controller].Count == 0)
@@ -106,6 +107,7 @@ namespace SephiriaArcaneForged.Networks
             CurrentArcaneWeapons[controller].Add(arcane);
             //OnWeaponEquippeedServerside?.Invoke(component);
             controller.InvokeRpcEquipWeapon(controller.currentWeapon);
+            controller.RpcEquipArcaneWeapon(arcane);
             if (showFx)
             {
                 Vector3 position = controller.unitAvatar.transform.position;
@@ -131,6 +133,15 @@ namespace SephiriaArcaneForged.Networks
             {
                 CmdUnequipArcaneWeapon(controller);
             }
+        }
+        [ClientRpc]
+        public static void RpcEquipArcaneWeapon(this WeaponControllerSimple controller, ArcaneWeapon_Basic basic)
+        {
+            NetworkWriterPooled writer = NetworkWriterPool.Get();
+            writer.WriteNetworkBehaviour(basic);
+            var func = "System.Void WeaponControllerSimple::RpcEquipArcaneWeapon(ArcaneWeapon_Basic)";
+            controller.InvokeSendRPCInternal(func, func.ToFunctionHashCode(), writer, 0);
+            NetworkWriterPool.Return(writer);
         }
         [Command]
         public static void CmdUnequipArcaneWeapon(this WeaponControllerSimple controller)
@@ -192,10 +203,37 @@ namespace SephiriaArcaneForged.Networks
                 ((WeaponControllerSimple)obj).UserCode_CmdArcaneUnequipArcaneWeapon();
             }
         }
+        public static void UserCode_RpcEquipArcaneWeapon(this WeaponControllerSimple controller, ArcaneWeapon_Basic basic)
+        {
+            foreach(var statsPanel in StatsPanels)
+            {
+                if(statsPanel == null)
+                    continue;
+                if(statsPanel.weaponIcon == null)
+                    continue;
+                if(statsPanel.weaponIcon.WeaponSimple == controller.currentWeapon)
+                {
+                    statsPanel.weaponIcon.SetArcaneWeapon(controller.currentWeapon, basic);
+                }
+            }
+        }
+
+        public static void InvokeUserCode_RpcEquipArcaneWeapon(NetworkBehaviour obj, NetworkReader reader, NetworkConnectionToClient senderConnection)
+        {
+            if (!NetworkServer.active)
+            {
+                Debug.LogError("Command CmdUnequipWeapon called on client.");
+            }
+            else
+            {
+                ((WeaponControllerSimple)obj).UserCode_RpcEquipArcaneWeapon(reader.ReadNetworkBehaviour<ArcaneWeapon_Basic>());
+            }
+        }
         static ArcaneWeaponExtensions()
         {
             RemoteProcedureCalls.RegisterCommand(typeof(WeaponControllerSimple), "System.Void WeaponControllerSimple::CmdEquipArcaneWeapon(System.Boolean,System.Int32,System.Boolean)", InvokeUserCode_CmdEquipArcaneWeapon__Boolean__Int32__Boolean, requiresAuthority: true);
             RemoteProcedureCalls.RegisterCommand(typeof(WeaponControllerSimple), "System.Void WeaponControllerSimple::CmdUnequipArcaneWeapon()", InvokeUserCode_CmdArcaneUnequipArcaneWeapon, requiresAuthority: true);
+            RemoteProcedureCalls.RegisterCommand(typeof(WeaponControllerSimple), "System.Void WeaponControllerSimple::RpcEquipArcaneWeapon(ArcaneWeapon_Basic)", InvokeUserCode_RpcEquipArcaneWeapon, requiresAuthority: true);
         }
 
         [HarmonyPatch(typeof(WeaponControllerSimple))]
