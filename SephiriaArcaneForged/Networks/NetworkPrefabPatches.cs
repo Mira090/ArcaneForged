@@ -10,7 +10,7 @@ namespace SephiriaArcaneForged.Networks
 {
     public static class NetworkPrefabPatches
     {
-
+        /*
         [HarmonyPatch(typeof(UnityEngine.Object))]
         public static class ObjectInstantiatePatch
         {
@@ -79,6 +79,6 @@ namespace SephiriaArcaneForged.Networks
                 prefab = ModAssetId.CustomNetworkPrefabs[assetId];
                 __result = prefab != null;
             }
-        }
+        }*/
     }
 }
