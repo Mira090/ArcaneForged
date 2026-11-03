@@ -233,7 +233,7 @@ namespace SephiriaArcaneForged.Networks
         {
             RemoteProcedureCalls.RegisterCommand(typeof(WeaponControllerSimple), "System.Void WeaponControllerSimple::CmdEquipArcaneWeapon(System.Boolean,System.Int32,System.Boolean)", InvokeUserCode_CmdEquipArcaneWeapon__Boolean__Int32__Boolean, requiresAuthority: true);
             RemoteProcedureCalls.RegisterCommand(typeof(WeaponControllerSimple), "System.Void WeaponControllerSimple::CmdUnequipArcaneWeapon()", InvokeUserCode_CmdArcaneUnequipArcaneWeapon, requiresAuthority: true);
-            RemoteProcedureCalls.RegisterRpc(typeof(WeaponControllerSimple), "System.Void WeaponControllerSimple::RpcEquipArcaneWeapon(ArcaneWeapon_Basic)", InvokeUserCode_RpcEquipArcaneWeapon, requiresAuthority: true);
+            RemoteProcedureCalls.RegisterRpc(typeof(WeaponControllerSimple), "System.Void WeaponControllerSimple::RpcEquipArcaneWeapon(ArcaneWeapon_Basic)", InvokeUserCode_RpcEquipArcaneWeapon);
         }
 
         [HarmonyPatch(typeof(WeaponControllerSimple))]
