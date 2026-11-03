@@ -45,7 +45,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         }
 
         public override NewWeaponFireData FireData => SephiriaPrefabs.DualSlashSecondFireData;
-        public override string DamageId => "ArcaneWeapon_SwordShieldDualSlash";
+        public override string DamageId => "ArcaneWeapon_GreatSwordDualSlash";
         public override float? DamageMultiplier => null;
         public override float AttackDashScale => 0f;
         protected override float ModifyDamage(float damage)
