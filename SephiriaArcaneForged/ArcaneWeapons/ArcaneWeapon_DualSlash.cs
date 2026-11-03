@@ -80,14 +80,13 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                 return;
             }
 
-            WeaponControllerSimple owner = WeaponController;
             int side;
-            if ((bool)owner)
+            if (NetworkAvatar)
             {
-                side = (owner.isOwned ? 1 : 0);
+                side = (NetworkAvatar.isOwned ? 1 : 0);
                 if (side != 0)
                 {
-                    stackUI.transform.position = owner.transform.position;
+                    stackUI.transform.position = NetworkAvatar.transform.position;
                 }
             }
             else
