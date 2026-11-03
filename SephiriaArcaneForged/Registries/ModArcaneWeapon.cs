@@ -232,13 +232,14 @@ namespace SephiriaArcaneForged.Registries
                 attackBuff.buffName = BuffName;
                 attackBuff.buffPercent = Percent;
             }
-            arcane.enabled = false;
+            //arcane.enabled = false;
             return o;
         }
         public virtual void OnRegister()
         {
             if (ResourcePrefab == null)
                 return;
+            HorayModAPI.RegisterNetworkPrefab(ResourcePrefab, Core.ModName + "_ArcaneWeapon_" + Name);
             if(ResourcePrefab.TryGetComponent<ArcaneWeapon_AttackBuff>(out var buff))
             {
                 buff.buffPrefab = BuffPrefab?.Invoke();
