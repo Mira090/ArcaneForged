@@ -125,6 +125,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         {
             base.OnDisabledEffect();
             NetworkAvatar.AddCustomStatUnsafe(Stat, -1);
+            Core.Logger("DualSlash disabled, Stat: " + NetworkAvatar.GetCustomStatUnsafe(Stat));
             consumedStacksForFinisher = 0;
             SetStacks(0);
             WeaponController.OnSwingCreated -= OnSwingCreated;
@@ -165,12 +166,14 @@ namespace SephiriaArcaneForged.ArcaneWeapons
 
             if (force > 0 && idx == WeaponController.currentWeapon.finalComboIdx)
             {
-                NetworkAvatar.AddCustomStatUnsafe(ForceBasicStat, -force);
                 NetworkAvatar.DestroyEffectHUD("DualSlash");
                 this.Delay(0.1f, () =>
                 {
                     if (!IsEffectEnabled || NetworkAvatar == null || WeaponController == null || NetworkAvatar.IsDead)
                         return;
+                    var force = NetworkAvatar.GetCustomStatUnsafe(ForceBasicStat);
+                    if (force > 0)
+                        NetworkAvatar.AddCustomStatUnsafe(ForceBasicStat, -force);
                     Attack();
                 });
             }
