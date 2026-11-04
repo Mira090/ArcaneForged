@@ -13,11 +13,11 @@ namespace SephiriaArcaneForged.Utilities
             var prop = instance.GetType().GetProperty(nameof(NetworkIdentity.assetId));
             prop.SetValue(instance, assetId);
         }
-        public static void InvokeSendRPCInternal(this NetworkBehaviour instance, string functionFullName, int functionHashCode, NetworkWriter writer, int channelId, bool requiresAuthority = true)
+        public static void InvokeSendRPCInternal(this NetworkBehaviour instance, string functionFullName, int functionHashCode, NetworkWriter writer, int channelId, bool includeOwner = true)
         {
             var type = typeof(NetworkBehaviour);
             var method = type.GetMethod("SendRPCInternal", BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Invoke(instance, new object[] { functionFullName, functionHashCode, writer, channelId, requiresAuthority });
+            method.Invoke(instance, new object[] { functionFullName, functionHashCode, writer, channelId, includeOwner });
         }
         public static void InvokeSendCommandInternal(this NetworkBehaviour instance, string functionFullName, int functionHashCode, NetworkWriter writer, int channelId, bool requiresAuthority = true)
         {
