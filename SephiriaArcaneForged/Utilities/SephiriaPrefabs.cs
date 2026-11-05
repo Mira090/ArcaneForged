@@ -203,6 +203,40 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData _dualSlashSecondFireData;
+        public static NewWeaponFireData MagicDuplicateFireData
+        {
+            get
+            {
+                if (_magicDuplicateFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1211);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponAddonCommon_ChangeWeaponAction>(out var sword))
+                        return null;
+                    _magicDuplicateFireData = sword.fireData;
+                }
+                return _magicDuplicateFireData;
+            }
+        }
+        private static NewWeaponFireData _magicDuplicateFireData;
+        public static NewWeaponFireData MagicReleaseFireData
+        {
+            get
+            {
+                if (_magicReleaseFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1213);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponAddonCommon_ChangeWeaponAction>(out var sword))
+                        return null;
+                    _magicReleaseFireData = sword.fireData;
+                }
+                return _magicReleaseFireData;
+            }
+        }
+        private static NewWeaponFireData _magicReleaseFireData;
         public static NewWeaponFireData CrystalExplosionFireData
         {
             get

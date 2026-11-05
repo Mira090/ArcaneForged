@@ -408,6 +408,24 @@ namespace SephiriaArcaneForged
         public static ModArcaneWeapon DaggerShadow { get; } = ModArcaneWeapon.CreateFlag("DaggerShadow", 1209, "EVASIONFURY", 1).SetEffect("WeaponAddon_EvasionFury_Effect")
             .SetCondition(ModArcaneWeapon.EConditionType.HasFury);
         /// <summary>
+        /// 模倣の書
+        /// ArcaneWeapon_DaggerMagic_Affix
+        /// 模倣の
+        /// ArcaneWeapon_DaggerMagic_Effect
+        /// <tag=WeaponAction_Fury>が<tag=WeaponAction_FuryMagic>に変更されます。
+        /// </summary>
+        public static ModArcaneWeapon DaggerMagic { get; } = ModArcaneWeapon.CreateFlag<ArcaneWeapon_MagicDuplicate>("DaggerMagic", 1211, ArcaneWeapon_MagicDuplicate.Duplicate, 1).SetEffect("WeaponAddon_FreeParryMagic_Effect")
+            .SetCondition(ModArcaneWeapon.EConditionType.HasFury);
+        /// <summary>
+        /// アカデミーの魔法剣-解放
+        /// ArcaneWeapon_DaggerMp_Affix
+        /// アカデミーの
+        /// ArcaneWeapon_DaggerMp_Effect
+        /// <tag=WeaponAction_Fury>が<tag=WeaponAction_FuryMP>に変更されます。
+        /// </summary>
+        public static ModArcaneWeapon DaggerMp { get; } = ModArcaneWeapon.CreateFlag<ArcaneWeapon_MagicRelease>("DaggerMp", 1213, ArcaneWeapon_MagicDuplicate.Release, 1).SetEffect("WeaponAddon_FreeParryMP_Effect")
+            .SetCondition(ModArcaneWeapon.EConditionType.HasFury);
+        /// <summary>
         /// 冷凍ワカサギ
         /// ArcaneWeapon_DaggerGlacier_Affix
         /// 冷凍
