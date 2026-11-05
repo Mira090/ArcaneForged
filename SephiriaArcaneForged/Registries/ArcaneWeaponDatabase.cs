@@ -27,6 +27,8 @@ namespace SephiriaArcaneForged.Registries
 
         public static ArcaneWeaponEntity FindWeaponById(WeaponEntity entity)
         {
+            if (weaponDictionary == null)
+                return null;
             if (weaponDictionary.ContainsKey(entity.id))
             {
                 return weaponDictionary[entity.id];
@@ -36,6 +38,8 @@ namespace SephiriaArcaneForged.Registries
         }
         public static ArcaneWeaponEntity FindWeaponById(int id)
         {
+            if (weaponDictionary == null)
+                return null;
             if (weaponDictionary.ContainsKey(id))
             {
                 return weaponDictionary[id];

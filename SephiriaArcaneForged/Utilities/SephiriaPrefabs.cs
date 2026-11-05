@@ -203,6 +203,23 @@ namespace SephiriaArcaneForged.Utilities
             }
         }
         private static NewWeaponFireData _dualSlashSecondFireData;
+        public static NewWeaponFireData OutsideBonusFireData
+        {
+            get
+            {
+                if (_outsideBonusFireData == null)
+                {
+                    var weapon = WeaponDatabase.FindWeaponById(1111);
+                    if (weapon == null)
+                        return null;
+                    if (!weapon.mainWeaponPrefab.TryGetComponent<WeaponSimple_GreatSword>(out var sword))
+                        return null;
+                    _outsideBonusFireData = sword.specialAttacks.LastOrDefault();
+                }
+                return _outsideBonusFireData;
+            }
+        }
+        private static NewWeaponFireData _outsideBonusFireData;
         public static NewWeaponFireData MagicDuplicateFireData
         {
             get

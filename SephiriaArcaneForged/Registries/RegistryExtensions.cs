@@ -17,6 +17,9 @@ namespace SephiriaArcaneForged.Registries
             item.EffectString = new LocalizedString(key);
             return item;
         }
+        /// <summary>
+        /// 1119葉爆発、1102骨の装置剣、1103軋む脊椎、1115異端審問官、1121放血装置剣、0017・1117・1118・1120レーザー大剣
+        /// </summary>
         public static List<int> NoWhirlwindGreatSwords = new List<int> { 1119, 1102, 1103, 1115, 1121, 0017, 1117, 1118, 1120 };
         public static T SetCondition<T>(this T item, EConditionType type) where T : ModArcaneWeapon
         {

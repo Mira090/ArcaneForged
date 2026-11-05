@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using SephiriaArcaneForged.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +8,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
 {
     public class ArcaneWeapon_OutsideBonus : ArcaneWeapon_StatusInstance
     {
+        public static readonly string Stat = "ChangeToOutsideBonus".ToSephiriaUpperId();
         public override void OnEnabledEffect()
         {
             base.OnEnabledEffect();
@@ -14,6 +16,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             {
                 great.NetworkoutsideBonus = true;
             }
+            NetworkAvatar.AddCustomStatUnsafe(Stat, 1);
         }
         public override void OnDisabledEffect()
         {
@@ -22,6 +25,7 @@ namespace SephiriaArcaneForged.ArcaneWeapons
             {
                 great.NetworkoutsideBonus = false;
             }
+            NetworkAvatar.AddCustomStatUnsafe(Stat, -1);
         }
         [HarmonyPatch(typeof(WeaponSimple_GreatSword), "OnSweepSwingChanged")]
         public static class OutsideBonusPatch

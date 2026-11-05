@@ -1,4 +1,6 @@
 ﻿using HarmonyLib;
+using SephiriaArcaneForged.ArcaneWeapons;
+using SephiriaArcaneForged.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -296,6 +298,27 @@ namespace SephiriaArcaneForged
                         return;
                     __instance.ripostelaserFxPrefab = charm.ripostelaserFxPrefab;
                 }
+            }
+        }
+
+
+        [HarmonyPatch(typeof(WeaponSimple))]
+        public static class GreatSwordPatch
+        {
+            [HarmonyPatch(nameof(WeaponSimple.GetSpecialAttack))]
+            [HarmonyPostfix]
+            static void GetBasicAttack(WeaponSimple __instance, int idx, ref NewWeaponFireData __result)
+            {
+                if (!__instance.Networkowner || !__instance.Networkowner.unitAvatar)
+                    return;
+                if (__instance is WeaponSimple_GreatSword)
+                {
+                    if (__instance.Networkowner.unitAvatar.GetCustomStatUnsafe(ArcaneWeapon_OutsideBonus.Stat) > 0)
+                    {
+                        __result = SephiriaPrefabs.OutsideBonusFireData;
+                    }
+                }
+                return;
             }
         }
     }
