@@ -461,7 +461,7 @@ namespace SephiriaArcaneForged.Networks
         public static Sprite ForgableSprite;
         public static void SetArcaneWeapon(this UI_WeaponIcon __instance, WeaponSimple weapon, ArcaneWeapon_Basic arcane)
         {
-            Core.Logger("arcane: " + arcane?.name);
+            Core.Logger("arcane: " + (arcane == null ? "null" : arcane.name));
 
             if (__instance.gameObject.TryGetComponent<UI_HorayButton>(out var button))
             {
