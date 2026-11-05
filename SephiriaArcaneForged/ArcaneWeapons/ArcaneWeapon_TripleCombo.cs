@@ -27,16 +27,18 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         public override void OnEnabledEffect()
         {
             base.OnEnabledEffect();
+            WeaponController.OnBaisAttackSwing += OnBaisAttackSwing;
             WeaponController.OnSwingCreated += OnSwingCreated;
         }
         public override void OnDisabledEffect()
         {
             base.OnDisabledEffect();
+            WeaponController.OnBaisAttackSwing -= OnBaisAttackSwing;
             WeaponController.OnSwingCreated -= OnSwingCreated;
         }
         private void OnSwingCreated(bool last, ProjectileBase projectile)
         {
-            if (!last)
+            if (!projectile.forceFinalCombo)
                 return;
             this.Delay(GetTriggerDelay(), () =>
             {
@@ -44,6 +46,22 @@ namespace SephiriaArcaneForged.ArcaneWeapons
                     return;
                 Attack();
             });
+        }
+        private void OnBaisAttackSwing(int idx)
+        {
+            if (idx != WeaponController.currentWeapon.finalComboIdx)
+                return;
+            this.Delay(GetTriggerDelay(), () =>
+            {
+                if (!IsEffectEnabled || NetworkAvatar == null || WeaponController == null || NetworkAvatar.IsDead)
+                    return;
+                Attack();
+            });
+        }
+        protected override void OnCreateAttack(int idx, ProjectileBase projectile)
+        {
+            projectile.forceFinalCombo = false;
+            WeaponController.OnSwingCreated?.Invoke(true, projectile);
         }
         protected override float ModifyDamage(float damage)
         {
@@ -53,10 +71,6 @@ namespace SephiriaArcaneForged.ArcaneWeapons
         protected override float GetTriggerDelay()
         {
             return 0.1f;
-        }
-        protected override bool GetForceFinalCombo()
-        {
-            return true;
         }
         public override int GetTriggerCount()
         {
