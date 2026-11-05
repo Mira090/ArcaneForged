@@ -248,6 +248,7 @@ namespace SephiriaArcaneForged.Networks
                             continue;
                         UI_WeaponEnhancementButton button = ((!(controller.currentWeapon is WeaponSimple_Crossbow)) ? UnityEngine.Object.Instantiate(__instance.buttonPrefab, __instance.tableZone) : UnityEngine.Object.Instantiate(__instance.buttonPrefab_Crossbow, __instance.tableZone));
                         button.SetWeaponMethod(__instance, controller.currentWeapon, item);
+                        SetArcaneWeaponMethod(button, __instance, controller.currentWeapon, item);
                         button.OnSelect += __instance.OnSelect;
                         button.OnDeselect += __instance.OnDeselect;
                         buttons.Add(button);
@@ -262,7 +263,19 @@ namespace SephiriaArcaneForged.Networks
                     __instance.rerollButtonGroup.gameObject.SetActive(true);
                 }
             }
+            private static void SetArcaneWeaponMethod(UI_WeaponEnhancementButton __instance, UI_WeaponEnhancementPanel panel, WeaponSimple currentWeapon, EnhancementMetadata enhancementMetadata)
+            {
+                if (currentWeapon == null || enhancementMetadata == null || enhancementMetadata.enhanced == null)
+                    return;
+                if (currentWeapon.Networkowner == null || !currentWeapon.Networkowner.CanEquipArcaneWeapon())
+                    return;
+                var arcane = ArcaneWeaponDatabase.FindWeaponById(enhancementMetadata.enhanced);
+                if (arcane == null)
+                    return;
+                __instance.effectText.text = arcane.GetEffectText(false);
+            }
         }
+        /*
         [HarmonyPatch(typeof(UI_WeaponEnhancementButton))]
         public static class UI_WeaponEnhancementButtonPatch
         {
@@ -279,7 +292,7 @@ namespace SephiriaArcaneForged.Networks
                     return;
                 __instance.effectText.text = arcane.GetEffectText(false);
             }
-        }
+        }*/
         [HarmonyPatch(typeof(UI_WeaponTooltip))]
         public static class UI_WeaponTooltipPatch
         {
