@@ -13,21 +13,9 @@ You can check which abilities you will gain in the journal.
 <img src="Images/journal.png" width=100%>
 
 ## 📥 Installation
-1. Download the latest `ArcaneForged-0.X.X.zip` from the Releases section and unzip it.
-2. Create an `AddOns` folder inside the `Program Files (x86)\Steam\steamapps\common\Sephiria` folder.
-3. Copy the `ArcaneForged` folder into the `Program Files (x86)\Steam\steamapps\common\Sephiria\AddOns` folder.
-
-Example:
-```
-Sephiria/
-└── AddOns/
-    └── ArcaneForged/
-        ├── Assets/
-        ├── Libs/
-        ├── metadata.json
-        ├── MiraModBase.dll
-        └── SephiriaArcaneForged.dll
-```
+1. Switch to the beta version of Sephiria's workshop
+2. Subscribe to the mod at https://steamcommunity.com/sharedfiles/filedetails/?id=3829579287
+3. Enable the mod on the Sephiria title screen.
 
 ## 📝 Notes
 - This repository and its contributors are in no way affiliated with Sephiria, TEAM HORAY, or any related organizations.
